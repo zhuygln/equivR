@@ -1,5 +1,4 @@
 project:
   title: "equivR ISC proposal"
   render:
-    - "*.qmd"
-    - "!proposal/"
+    - "isc-proposal.qmd"

@@ -25,17 +25,17 @@ bibliography: references.bib
 _This template was last revised on 2026-03-24._
 
 
-{{< include proposal/00-exec-summary.qmd >}}
+{{< include00-exec-summary.qmd >}}
 
-{{< include proposal/01-signatories.qmd >}}
+{{< include01-signatories.qmd >}}
 
-{{< include proposal/02-problemdefinition.qmd >}}
+{{< include02-problemdefinition.qmd >}}
 
-{{< include proposal/03-proposal.qmd >}}
+{{< include03-proposal.qmd >}}
 
-{{< include proposal/04-timeline.qmd >}}
+{{< include04-timeline.qmd >}}
 
-{{< include proposal/05-success.qmd >}}
+{{< include05-success.qmd >}}
 
 ::: refs
 :::

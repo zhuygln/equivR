@@ -37,23 +37,30 @@ Both project leads have current employers, but `equivR` is independent open-sour
 
 This repository is the project link for our **R Consortium ISC 2026-2** technical grant proposal.
 
-The proposal follows the official R Consortium ISC Quarto structure:
+All proposal sources live in [`proposal/`](proposal/) and follow the official R Consortium ISC Quarto structure:
 
+- `proposal/isc-proposal.qmd` (entry point)
 - `proposal/00-exec-summary.qmd`
 - `proposal/01-signatories.qmd`
 - `proposal/02-problemdefinition.qmd`
 - `proposal/03-proposal.qmd`
 - `proposal/04-timeline.qmd`
 - `proposal/05-success.qmd`
+- `proposal/figures/equivR-cross-runtime-overview.png`
+- `proposal/SUBMISSION_FORM.md`
 
-Additional project files:
+Project code lives at the repo root:
 
-- Proposal entry point: [`isc-proposal.qmd`](isc-proposal.qmd)
-- Architecture figure: [`figures/`](figures/)
 - Minimal prototype: [`R/equivR.R`](R/equivR.R)
 - Prototype examples: [`examples/basic_validation.R`](examples/basic_validation.R)
 
-Render `isc-proposal.qmd` with Quarto. The proposal uses the official [`RConsortium/isc-proposal`](https://github.com/RConsortium/isc-proposal) structure and Hikmah PDF format.
+Render the proposal from inside the `proposal/` directory:
+
+```sh
+cd proposal && quarto render isc-proposal.qmd
+```
+
+The proposal uses the official [`RConsortium/isc-proposal`](https://github.com/RConsortium/isc-proposal) structure and Hikmah PDF format.
 
 ## Initial prototype
 
