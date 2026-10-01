@@ -18,8 +18,6 @@ A minimal proof of concept already demonstrates exact, tolerance-aware, and stru
 
 **Yonglin Zhu** - co-PI / co-lead; Senior Staff Scientist at SAS Institute. ORCID [0000-0003-0245-827X](https://orcid.org/0000-0003-0245-827X); <zhuygln@gmail.com>. Led development of a completed SAS-to-Python modernization framework using AI-assisted transformation, hybrid SAS/Python execution, and numerical-equivalence validation. Leads architecture, equivalence-contract design, and validation workflow implementation. Project: <https://github.com/zhuygln/equivR>.
 
-We request **$5,000 over four months** for project labor. No funds are requested for cloud services or AI credits.
-
 **Xing Cai** - co-PI / co-lead; founding member of the R Working Group at PPD. ORCID [0009-0004-5983-3338](https://orcid.org/0009-0004-5983-3338); <caixingtt@gmail.com>. Applied analytics experience with SAS, R, Python, statistical modeling, and data-science workflows; co-leads R-community use-case design, benchmark development, testing, documentation, and applied evaluation.
 
 `equivR` is independent open-source work: it is not sponsored, funded, or endorsed by either co-PI's employer and does not depend on employer-owned code, data, or infrastructure.
@@ -225,12 +223,32 @@ No grant funds are requested for travel, workshops, hardware, publication fees, 
 
 ## Definition of done
 
-An R user can provide reference artifacts and a candidate, declare a contract, run validation locally or in CI, and receive deterministic diagnostics and reproducible evidence without the reference runtime present. Both initial benchmark cases run from a clean checkout, and one closed-loop example accepts a repaired candidate only after **100% of required declared checks pass**. A contribution specification supports additional community cases.
+Phase 1 is complete when `equivR` can demonstrate the full modernization workflow in two cases:
+
+1. SAS -> R: an R candidate is generated or repaired with an LLM and accepted only after deterministic validation against trusted SAS reference artifacts; and
+2. legacy R -> modern R: the same validation workflow is used to refactor an existing R analysis.
+
+For both cases, users must be able to define an equivalence contract, run validation locally or in CI, receive structured diagnostics for failures, and produce reproducible validation evidence.
+
+A live SAS runtime will not be required in CI. The automated repair loop will be model/provider independent, and the LLM will never determine acceptance.
 
 ## Measuring success
 
-Success means: CI passes; both benchmark cases reproduce from a clean checkout; deterministic machine- and human-readable evidence is produced; the closed-loop example passes; an R-friendly invocation path and benchmark contribution specification are documented; and an initial tagged release is published. Any declared mismatch must fail closed with actionable diagnostics.
+Success will be measured by whether:
+
+* both benchmark cases run from a clean checkout;
+* all declared required checks pass before a candidate is accepted;
+* deliberately introduced mismatches fail with actionable diagnostics;
+* the SAS -> R example works from pregenerated trusted artifacts;
+* the same validation framework supports the legacy R -> modern R case;
+* an R-friendly invocation path and CI example are documented;
+* validation results include reproducibility metadata and machine-readable evidence; and
+* an initial public release is published.
+
+The goal is not to show that an LLM can translate every analytical program. The goal is to show that modernization can be made verifiable: generation may vary, but acceptance remains deterministic.
 
 ## Future work
 
-Future consumers may include live SAS/other runtime adapters, richer result schemas, hybrid SAS/R or Python/R orchestration, repository-scale translation, and automated multi-step repair - not Phase 1 deliverables.
+After Phase 1, the same framework can be extended to additional SAS -> R and Python -> R cases, richer analytical result types, live runtime adapters, larger repository-scale modernization, and more automated multi-step repair.
+
+The benchmark format can also grow through community contributions and future R Consortium submission-oriented use cases.
