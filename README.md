@@ -81,7 +81,7 @@ Rscript examples/basic_validation.R
 
 ## License
 
-Software code in this repository is released under the [MIT License](LICENSE). The proposal scaffold and retained Hikmah formatting files derive from the official R Consortium ISC proposal template; see [`NOTICE.md`](NOTICE.md).
+Software code in this repository is released under the [Mozilla Public License 2.0 (MPL-2.0)](LICENSE). The proposal scaffold and retained Hikmah formatting files derive from the official R Consortium ISC proposal template; see [`NOTICE.md`](NOTICE.md).
 
 ## Funding note
 
