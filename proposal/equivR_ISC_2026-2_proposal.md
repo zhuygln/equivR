@@ -4,19 +4,13 @@
 
 # Executive Summary
 
-R is becoming an important open-source option for clinical-trial analysis and regulatory submissions, but long-term reviewability remains a practical challenge. Recreating an old R environment can be difficult as packages, runtimes, and dependencies change. Containers and environment preservation help, but eventually some analytical workflows must be refactored or migrated rather than frozen in place.
+R is becoming an important open-source option for clinical-trial analysis and regulatory submissions, but long-term reviewability remains a practical challenge as packages, runtimes, and dependencies change. Environment preservation helps, but some analytical workflows eventually need to be refactored or migrated rather than frozen in place.
 
-`equivR` addresses that next step: how do we modernize trusted analytical code without losing the behavior that made the original workflow trustworthy?
-
-The project combines LLM-assisted code modernization with independent, deterministic validation:
+`equivR` addresses that next step: modernize trusted analytical code while independently verifying that its analytical behavior is preserved.
 
 > **Generation proposes; validation decides.**
 
-In the first Phase 1 demonstration, a trusted SAS workflow will be modernized to R. The LLM may generate or repair the R implementation, but `equivR` will decide acceptance by comparing its outputs with pregenerated trusted SAS reference artifacts under an explicit equivalence contract. A second demonstration will apply the same workflow to legacy R -> modern R, showing that the approach supports both cross-runtime migration and long-term maintenance within R.
-
-Over four months, the project will deliver an open-source `equivR` core under MPL-2.0, including equivalence contracts, deterministic dataset and analytical-result validation, structured diagnostics, a model-independent repair loop, R-friendly local/CI workflows, and reproducibility evidence.
-
-The goal is not to build another universal translator. It is to make analytical modernization verifiable: code may evolve, models may change, and runtimes may differ, while acceptance remains tied to trusted analytical results.
+Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted SAS reference artifacts, then apply the same workflow to legacy R -> modern R. Over four months, the project will deliver an open-source `equivR` core under MPL-2.0 with deterministic equivalence validation, structured diagnostics, a model-independent LLM repair loop, R-friendly local/CI workflows, and reproducibility evidence.
 
 # Signatories
 
@@ -30,7 +24,7 @@ The goal is not to build another universal translator. It is to make analytical 
 
 ## Contributors
 
-The co-PIs have already prepared this proposal and a public prototype at <https://github.com/zhuygln/equivR>: a base-R proof of concept with worked examples, a Phase 1 implementation plan, and early contract-v1 validation code with tests and CI. Community contributions will be invited through the repository.
+None yet; contributions will be invited through the public repository.
 
 ## Consulted
 

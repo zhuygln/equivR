@@ -2,23 +2,15 @@
 
 ## Project team
 
-```{=latex}
-\begingroup\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
-```
-
 **Yonglin Zhu** — co-PI / co-lead. Led a completed SAS-to-Python modernization framework combining AI-assisted transformation with numerical-equivalence validation. Leads architecture, contract design, and the validator.
 
 **Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at PPD, working across SAS and R analytics. Leads use-case design, benchmarks, testing, and documentation.
 
 `equivR` is independent open-source work, not sponsored, funded, or endorsed by either co-PI's employer, and does not use employer-owned code, data, or infrastructure.
 
-```{=latex}
-\endgroup
-```
-
 ## Contributors
 
-The co-PIs have already prepared this proposal and a public prototype at <https://github.com/zhuygln/equivR>: a base-R proof of concept with worked examples, a Phase 1 implementation plan, and early contract-v1 validation code with tests and CI. Community contributions will be invited through the repository.
+None yet; contributions will be invited through the public repository.
 
 ## Consulted
 
