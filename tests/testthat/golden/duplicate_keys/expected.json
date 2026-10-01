@@ -1,0 +1,167 @@
+{
+  "schema_version": "equivr-result/v1",
+  "status": "FAIL",
+  "contract": {
+    "version": "equivr-contract/v1",
+    "name": "duplicate_keys",
+    "sha256": "bfe47f1a1b118e6beab7e39dcb4c4ee88e897651fce8f7107902cb953d279417"
+  },
+  "artifacts": {
+    "reference": {
+      "source": "reference.csv",
+      "format": "csv",
+      "sha256": "247d03c5146dd6810e9a725a46bc7c280289e715d25bfa3e7c9c9ea1ab942530",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    },
+    "candidate": {
+      "source": "candidate.csv",
+      "format": "csv",
+      "sha256": "ee32329d9ed382a41e813f98e6f45e6e09e2f5ae8988f41504d805b753acd90c",
+      "n_rows": 4,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    }
+  },
+  "summary": {
+    "n_checks": 11,
+    "n_passed": 7,
+    "failed_required": [
+      "keys.unique_candidate",
+      "values.missingness",
+      "values.exact",
+      "values.numeric"
+    ],
+    "failed_optional": []
+  },
+  "checks": [
+    {
+      "id": "schema.missing_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.extra_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.type_mismatch",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.present",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_reference",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_candidate",
+      "required": true,
+      "status": "fail",
+      "n_mismatch": 1,
+      "fields": [],
+      "message": "1 duplicated key value(s) in candidate.",
+      "diagnostics": [
+        {
+          "key": {
+            "id": "B"
+          },
+          "count": 2
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.missing_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.extra_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.missingness",
+      "required": true,
+      "status": "skipped",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "Not evaluated: duplicate keys make row alignment ambiguous.",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.exact",
+      "required": true,
+      "status": "skipped",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "Not evaluated: duplicate keys make row alignment ambiguous.",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.numeric",
+      "required": true,
+      "status": "skipped",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "Not evaluated: duplicate keys make row alignment ambiguous.",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    }
+  ]
+}

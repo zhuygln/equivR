@@ -1,0 +1,10 @@
+version: equivr-contract/v1
+name: optional_extra_field
+reference: reference.csv
+candidate: candidate.csv
+keys: [id]
+tolerance:
+  abs: 1.0e-8
+  rel: 0.0
+checks:
+  schema.extra_fields: optional
