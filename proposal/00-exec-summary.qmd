@@ -1,15 +1,9 @@
 # Executive Summary
 
-`equivR` is an open-source cross-runtime validation toolkit for R modernization and migration. It is designed for workflows in which R is a source, target, or participating runtime: for example, legacy R to modern R, SAS to R, Python to R, package replacement, refactoring, and AI-assisted R development. The validation infrastructure may use Python internally for orchestration and artifact handling, while the interfaces, examples, and benchmark cases are centered on R-community workflows.
-
-The core principle is:
+`equivR` is an open-source cross-runtime validation toolkit for R modernization, migration, and refactoring. R is the community focus; the implementation language of a trusted reference or candidate is outside the trust model, and Python may be used internally for orchestration.
 
 > **Generation proposes; validation decides.**
 
-A large language model, translator, or developer may generate or repair code, but `equivR` never accepts a candidate because its producer says it is correct. A candidate must execute and satisfy an explicit equivalence contract against a trusted reference. Any failed required check blocks acceptance and returns deterministic diagnostics for repair and re-validation. Within the declared contract, acceptance requires **100% of required checks passing**.
+A translator, LLM, or developer may produce code, but acceptance requires execution against an explicit equivalence contract. Any failed required check blocks acceptance and returns deterministic diagnostics for repair and re-validation.
 
-This need is visible in current R Consortium work. The Submissions Working Group has highlighted reproducibility and reviewability challenges [@reviewable2026], while Pilot 5 already performs project-specific QC by comparing R-generated ADaM datasets with prior reference datasets in CI [@pilot5].
-
-A minimal proof of concept already demonstrates the core fail-closed comparison pattern, including exact matches, tolerance-aware numerical comparison, structural mismatches, and deterministic failure diagnostics. The grant will turn that pattern into reusable cross-runtime infrastructure with a language-neutral equivalence contract, runtime adapters, structured-result validation, reproducibility metadata, R-facing workflows, and a community benchmark format.
-
-We request **$5,000 over four months**, entirely for project labor and technical development. No grant funds are requested for cloud or AI credits.
+A minimal proof of concept already demonstrates exact, tolerance-aware, and structural checks. The project also builds on prior delivery of a completed SAS-to-Python modernization framework using AI-assisted transformation, hybrid execution, and independent numerical validation. The grant turns these proven patterns into reusable R-centered infrastructure: a language-neutral contract, cross-runtime artifact normalization, structured-result validation, reproducibility evidence, R-facing workflows, and community benchmark cases.

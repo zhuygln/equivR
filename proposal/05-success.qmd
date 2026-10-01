@@ -2,18 +2,12 @@
 
 ## Definition of done
 
-The project is done when an R user can provide trusted reference artifacts and a candidate, declare an equivalence contract, run validation locally or in CI, and receive deterministic diagnostics plus reproducible evidence without requiring the reference runtime to be present.
-
-At least two benchmark cases will run from a clean checkout: **legacy R -> modern R** and **cross-runtime reference -> R**. One closed-loop example will begin with a failed candidate and accept the repaired candidate only after **100% of required checks in the declared contract pass**. This refers only to declared checks, not universal semantic equivalence.
-
-The project will also be **benchmark-ready**: it will publish a contribution specification and repository structure for additional community-contributed cases.
+An R user can provide reference artifacts and a candidate, declare a contract, run validation locally or in CI, and receive deterministic diagnostics and reproducible evidence without the reference runtime present. Both initial benchmark cases run from a clean checkout, and one closed-loop example accepts a repaired candidate only after **100% of required declared checks pass**. A contribution specification supports additional community cases.
 
 ## Measuring success
 
-Success will be measured by: all automated CI checks passing; both initial benchmark cases reproducing from a clean checkout; deterministic machine-readable and human-readable evidence; one failed-to-repaired closed-loop example; a documented benchmark contribution specification; an R-friendly invocation path; and an initial tagged release.
-
-The key behavior is **fail closed**: any declared mismatch blocks acceptance and produces actionable diagnostics.
+Success means: CI passes; both benchmark cases reproduce from a clean checkout; deterministic machine- and human-readable evidence is produced; the closed-loop example passes; an R-friendly invocation path and benchmark contribution specification are documented; and an initial tagged release is published. Any declared mismatch must fail closed with actionable diagnostics.
 
 ## Future work
 
-Extensions may include live SAS or other runtime adapters, richer result schemas, hybrid SAS/R or Python/R orchestration, repository-scale translation, and automated multi-step repair. These are future consumers or extensions of the validation layer, not Phase 1 deliverables. The long-term direction is evidence-driven modernization: code can be generated quickly, but trusted deployment requires independent validation.
+Future consumers may include live SAS/other runtime adapters, richer result schemas, hybrid SAS/R or Python/R orchestration, repository-scale translation, and automated multi-step repair - not Phase 1 deliverables.

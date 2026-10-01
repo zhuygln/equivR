@@ -24,9 +24,6 @@ format:
 bibliography: references.bib
 ---
 
-_This template was last revised on 2026-03-24._
-
-
 {{< include 00-exec-summary.qmd >}}
 
 {{< include 01-signatories.qmd >}}

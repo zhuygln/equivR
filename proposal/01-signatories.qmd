@@ -2,16 +2,12 @@
 
 ## Project team
 
-**Yonglin Zhu - co-PI / co-lead; Senior Staff Scientist at SAS Institute.** ORCID: [0000-0003-0245-827X](https://orcid.org/0000-0003-0245-827X). Email: <zhuygln@gmail.com>. Yonglin has experience modernizing SAS-based analytical systems, cross-language execution, numerical validation, Python-based tooling, and AI-assisted code transformation. He will lead architecture, equivalence-contract design, and validation workflow implementation. Public project artifact: <https://github.com/zhuygln/equivR>.
+**Yonglin Zhu** - co-PI / co-lead; Senior Staff Scientist at SAS Institute. ORCID [0000-0003-0245-827X](https://orcid.org/0000-0003-0245-827X); <zhuygln@gmail.com>. Led development of a completed SAS-to-Python modernization framework using AI-assisted transformation, hybrid SAS/Python execution, and numerical-equivalence validation. Leads architecture, equivalence-contract design, and validation workflow implementation. Project: <https://github.com/zhuygln/equivR>.
 
-**Xing Cai - co-PI / co-lead; founding member of the R Working Group at PPD.** ORCID: [0009-0004-5983-3338](https://orcid.org/0009-0004-5983-3338). Email: <caixingtt@gmail.com>. Xing has applied analytics experience with SAS, R, Python, statistical modeling, and data-science workflows. She will co-lead R-community use-case design, testing, documentation, and applied evaluation.
+We request **$5,000 over four months** for project labor. No funds are requested for cloud services or AI credits.
 
-`equivR` is independent open-source work. It is not sponsored, funded, directed, or endorsed by either co-PI's employer and does not depend on employer-owned code, data, or infrastructure.
+**Xing Cai** - co-PI / co-lead; founding member of the R Working Group at PPD. ORCID [0009-0004-5983-3338](https://orcid.org/0009-0004-5983-3338); <caixingtt@gmail.com>. Applied analytics experience with SAS, R, Python, statistical modeling, and data-science workflows; co-leads R-community use-case design, benchmark development, testing, documentation, and applied evaluation.
 
-## Contributors
+`equivR` is independent open-source work: it is not sponsored, funded, or endorsed by either co-PI's employer and does not depend on employer-owned code, data, or infrastructure.
 
-None at submission time. Community contributions will be welcomed through the public repository and benchmark-contribution process.
-
-## Consulted
-
-No formal external reviewers at submission time. The project design is informed by public R Consortium Submissions Working Group materials [@pilot5; @submissions2026; @reviewable2026]. The project will actively solicit feedback through the public repository and community benchmark process; citation of public material does not imply endorsement.
+**Contributors / consulted.** None at submission time; community contributions will be invited through the public repository and benchmark process. The design is informed by public R Consortium Submissions Working Group materials [@pilot5; @submissions2026; @reviewable2026]; citation does not imply endorsement.

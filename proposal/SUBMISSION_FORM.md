@@ -14,6 +14,6 @@ Use this as a copy/paste checklist for the R Consortium form.
 - **No travel/workshop/hardware/publication/cloud/AI credits:** `Yes`
 - **Additional Comments:** Optional. Suggested concise text:
   `equivR is independent open-source work by the two co-PIs and is not sponsored or endorsed by either co-PI's employer.`
-- **Upload PDF:** Render `isc-proposal.qmd` using the included official ISC Quarto/Hikmah scaffold.
+- **Upload PDF:** `proposal/isc-proposal.pdf` — produced by `quarto render proposal/isc-proposal.qmd --to hikmah-pdf` using the included official ISC Quarto/Hikmah scaffold.
 
 Before submission, confirm the public repository shows the proposal source, prototype, and figure.

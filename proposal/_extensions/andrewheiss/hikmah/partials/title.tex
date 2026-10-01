@@ -38,7 +38,8 @@ $for(by-author)$
 {\large $it.name.literal$$if(it.orcid)$~\orcidlink{$it.orcid$}$endif$}%
 $if(it.attributes.corresponding)$\thanks{Corresponding author.}$endif$ \\%
 $for(it.affiliations)$$it.name$ \\$endfor$%
-{\footnotesize \url{$it.email$}} \and
+{\footnotesize \url{$it.email$}}%
+$sep$\\[1.5em]%
 $endfor$
 }
 
