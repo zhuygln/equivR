@@ -1,0 +1,164 @@
+{
+  "schema_version": "equivr-result/v1",
+  "status": "PASS",
+  "contract": {
+    "version": "equivr-contract/v1",
+    "name": "optional_extra_field",
+    "sha256": "08ad0a302c56cd2d510ae6edf2480c8eff887695089e35f1181039e00bdba633"
+  },
+  "artifacts": {
+    "reference": {
+      "source": "reference.csv",
+      "format": "csv",
+      "sha256": "247d03c5146dd6810e9a725a46bc7c280289e715d25bfa3e7c9c9ea1ab942530",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    },
+    "candidate": {
+      "source": "candidate.csv",
+      "format": "csv",
+      "sha256": "1e6fa44ec16309627e1337ba80cd79030eb7c3505f6b76b2c42c3e875c123648",
+      "n_rows": 3,
+      "n_cols": 5,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group",
+        "run_note"
+      ]
+    }
+  },
+  "summary": {
+    "n_checks": 11,
+    "n_passed": 10,
+    "failed_required": [],
+    "failed_optional": [
+      "schema.extra_fields"
+    ]
+  },
+  "checks": [
+    {
+      "id": "schema.missing_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.extra_fields",
+      "required": false,
+      "status": "fail",
+      "n_mismatch": 1,
+      "fields": [
+        "run_note"
+      ],
+      "message": "1 extra candidate field(s).",
+      "diagnostics": [
+        {
+          "field": "run_note"
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.type_mismatch",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.present",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_reference",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.missing_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.extra_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.missingness",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.exact",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.numeric",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    }
+  ]
+}

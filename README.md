@@ -49,10 +49,12 @@ All proposal sources live in [`proposal/`](proposal/) and follow the official R 
 - `proposal/figures/equivR-cross-runtime-overview.png`
 - `proposal/SUBMISSION_FORM.md`
 
-Project code lives at the repo root:
+Project code lives at the repo root as an R package:
 
-- Minimal prototype: [`R/equivR.R`](R/equivR.R)
-- Prototype examples: [`examples/basic_validation.R`](examples/basic_validation.R)
+- Package sources: [`R/`](R/) (contract, normalization, dataset comparison, result/evidence)
+- Contract specification: [`doc/contract.md`](doc/contract.md) and JSON schemas in [`schemas/`](schemas/)
+- Examples: [`examples/basic_validation.R`](examples/basic_validation.R) and [`examples/contracts/`](examples/contracts/)
+- Implementation plan: [`doc/equivR_implementation_plan.md`](doc/equivR_implementation_plan.md)
 
 Render the proposal from inside the `proposal/` directory:
 
@@ -62,21 +64,47 @@ cd proposal && quarto render isc-proposal.qmd
 
 The proposal uses the official [`RConsortium/isc-proposal`](https://github.com/RConsortium/isc-proposal) structure and Hikmah PDF format.
 
-## Initial prototype
+## Install and run
 
-The current base-R proof of concept demonstrates the fail-closed acceptance semantics the full toolkit will preserve:
+`equivR` is in early development (milestone M1: contract and dataset validation).
+
+```r
+# install.packages("remotes")
+remotes::install_github("zhuygln/equivR")
+```
+
+Validate a candidate against a reference with a YAML contract:
+
+```r
+library(equivR)
+
+res <- equiv_validate(contract = "contract.yaml")   # artifacts declared in the contract
+res                                                 # human-readable report
+equiv_passed(res)                                   # TRUE only if all required checks pass
+write_result_json(res, "evidence.json")             # machine-readable evidence
+```
+
+Or build the contract in R:
+
+```r
+res <- equiv_validate(reference_df, candidate_df,
+                      equiv_contract(keys = "id", abs_tol = 1e-8, rel_tol = 1e-8))
+```
+
+Semantics are fail-closed:
 
 - exact match -> PASS;
 - numerical difference inside tolerance -> PASS;
 - numerical difference outside tolerance -> FAIL with diagnostics;
-- structural/key mismatch -> FAIL.
+- structural, key, or missing-value mismatch -> FAIL;
+- a required check that cannot be evaluated -> FAIL.
 
-This is deliberately small. The grant expands the proof of concept into reusable cross-runtime infrastructure, R-facing workflows, evidence generation, and community benchmarks.
-
-Run the prototype checks with:
+Development:
 
 ```sh
-Rscript examples/basic_validation.R
+R CMD INSTALL . && Rscript examples/basic_validation.R
+Rscript -e 'testthat::test_local()'
+EQUIVR_UPDATE_GOLDEN=1 Rscript -e 'testthat::test_local()'   # regenerate golden evidence, then review the diff
 ```
 
 ## License
@@ -89,4 +117,4 @@ The proposal requests **$5,000 over four months**. No ISC funding is requested f
 
 ## Status
 
-Early prototype and grant-proposal stage.
+Milestone M1 (deterministic contract and dataset validation) in progress; grant-proposal stage.

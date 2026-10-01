@@ -1,0 +1,170 @@
+{
+  "schema_version": "equivr-result/v1",
+  "status": "FAIL",
+  "contract": {
+    "version": "equivr-contract/v1",
+    "name": "tolerance_fail",
+    "sha256": "acca4c98c37b073b228181701697fc51ed503efcd8547b32919e48e18f04b1e2"
+  },
+  "artifacts": {
+    "reference": {
+      "source": "reference.csv",
+      "format": "csv",
+      "sha256": "247d03c5146dd6810e9a725a46bc7c280289e715d25bfa3e7c9c9ea1ab942530",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    },
+    "candidate": {
+      "source": "candidate.csv",
+      "format": "csv",
+      "sha256": "993444465a1af995c23cab284ab2314f47a93b9871b4a36733747286c268602d",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    }
+  },
+  "summary": {
+    "n_checks": 11,
+    "n_passed": 10,
+    "failed_required": [
+      "values.numeric"
+    ],
+    "failed_optional": []
+  },
+  "checks": [
+    {
+      "id": "schema.missing_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.extra_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.type_mismatch",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.present",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_reference",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.missing_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.extra_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.missingness",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.exact",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.numeric",
+      "required": true,
+      "status": "fail",
+      "n_mismatch": 1,
+      "fields": [
+        "estimate"
+      ],
+      "message": "1 numeric value(s) outside tolerance in: estimate.",
+      "diagnostics": [
+        {
+          "field": "estimate",
+          "key": {
+            "id": "B"
+          },
+          "reference": 2,
+          "candidate": 2.001,
+          "delta": 0.00099999999999989,
+          "tolerance": 1e-08
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    }
+  ]
+}

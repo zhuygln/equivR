@@ -1,0 +1,34 @@
+# Benchmark class 1: legacy R -> modern R.
+# A base-R subject-level summary is re-implemented with modern tooling
+# (e.g. dplyr). Both implementations run in R; the legacy output is the
+# trusted reference.
+version: equivr-contract/v1
+name: legacy-r-to-modern-r
+description: >
+  Subject-level baseline summary produced by a legacy base-R script versus a
+  modernized implementation. Integer counts and labels must match exactly;
+  derived statistics may differ only by floating-point noise.
+reference:
+  path: reference/adsl_summary.csv
+  format: csv
+  description: Output of legacy/derive_adsl.R
+candidate:
+  path: candidate/adsl_summary.csv
+  format: csv
+  description: Output of modern/derive_adsl.R
+keys: [USUBJID]
+fields:
+  required: [USUBJID, ARM, AGE, AGEGR1, BMIBL, SAFFL]
+  exact: [AGE]
+  ignore: [CREATED_AT]
+  capture_only: [PROGRAM]
+missing:
+  default: match
+  fields:
+    ARM: forbid
+    SAFFL: forbid
+tolerance:
+  abs: 1.0e-10
+  rel: 1.0e-12
+checks:
+  schema.extra_fields: optional

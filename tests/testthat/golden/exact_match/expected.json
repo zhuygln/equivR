@@ -1,0 +1,155 @@
+{
+  "schema_version": "equivr-result/v1",
+  "status": "PASS",
+  "contract": {
+    "version": "equivr-contract/v1",
+    "name": "exact_match",
+    "sha256": "72c93a587c8bc604074c8a5ce4311551f86a4346c4c56ae650b525783b87e573"
+  },
+  "artifacts": {
+    "reference": {
+      "source": "reference.csv",
+      "format": "csv",
+      "sha256": "247d03c5146dd6810e9a725a46bc7c280289e715d25bfa3e7c9c9ea1ab942530",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    },
+    "candidate": {
+      "source": "candidate.csv",
+      "format": "csv",
+      "sha256": "247d03c5146dd6810e9a725a46bc7c280289e715d25bfa3e7c9c9ea1ab942530",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    }
+  },
+  "summary": {
+    "n_checks": 11,
+    "n_passed": 11,
+    "failed_required": [],
+    "failed_optional": []
+  },
+  "checks": [
+    {
+      "id": "schema.missing_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.extra_fields",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.type_mismatch",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.present",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_reference",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.missing_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.extra_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.missingness",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.exact",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.numeric",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+^LICENSE\.md$
+^proposal$
+^doc$
+^schemas$
+^examples$
+^\.github$
+^README\.md$
+^NOTICE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.claude$
+^equivR\.Rcheck$
+^equivR_.*\.tar\.gz$
+^\.gitattributes$

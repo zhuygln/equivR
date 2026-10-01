@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zhuygln/equivR/schemas/result-v1.schema.json",
+  "title": "equivR validation result v1",
+  "description": "Machine-readable validation evidence. status is PASS only if every required check has status pass.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "contract", "artifacts", "summary", "checks"],
+  "properties": {
+    "schema_version": { "const": "equivr-result/v1" },
+    "status": { "enum": ["PASS", "FAIL"] },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "sha256"],
+      "properties": {
+        "version": { "const": "equivr-contract/v1" },
+        "name": { "type": ["string", "null"] },
+        "source": { "type": ["string", "null"] },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "candidate"],
+      "properties": {
+        "reference": { "$ref": "#/$defs/artifact" },
+        "candidate": { "$ref": "#/$defs/artifact" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n_checks", "n_passed", "failed_required", "failed_optional"],
+      "properties": {
+        "n_checks": { "type": "integer", "minimum": 0 },
+        "n_passed": { "type": "integer", "minimum": 0 },
+        "failed_required": { "type": "array", "items": { "$ref": "#/$defs/checkId" } },
+        "failed_optional": { "type": "array", "items": { "$ref": "#/$defs/checkId" } }
+      }
+    },
+    "checks": { "type": "array", "items": { "$ref": "#/$defs/check" } },
+    "provenance": {
+      "description": "Run metadata. Excluded from determinism comparisons.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "equivR_version": { "type": "string" },
+        "r_version": { "type": "string" },
+        "platform": { "type": "string" },
+        "source_revision": { "type": ["string", "null"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "format", "sha256", "n_rows", "n_cols", "columns"],
+      "properties": {
+        "source": { "type": "string" },
+        "format": { "enum": ["csv", "rds", "data.frame"] },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "n_rows": { "type": "integer", "minimum": 0 },
+        "n_cols": { "type": "integer", "minimum": 0 },
+        "columns": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "checkId": {
+      "enum": [
+        "schema.missing_fields", "schema.extra_fields", "schema.type_mismatch",
+        "keys.present", "keys.unique_reference", "keys.unique_candidate",
+        "rows.missing_in_candidate", "rows.extra_in_candidate",
+        "values.missingness", "values.exact", "values.numeric"
+      ]
+    },
+    "scalar": { "type": ["string", "number", "boolean", "null"] },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "required", "status", "n_mismatch", "fields", "message",
+                   "diagnostics", "n_diagnostics_omitted"],
+      "properties": {
+        "id": { "$ref": "#/$defs/checkId" },
+        "required": { "type": "boolean" },
+        "status": { "enum": ["pass", "fail", "skipped", "error"] },
+        "n_mismatch": { "type": "integer", "minimum": 0 },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "message": { "type": "string" },
+        "diagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } },
+        "n_diagnostics_omitted": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "key": { "type": "object", "additionalProperties": { "$ref": "#/$defs/scalar" } },
+        "missing_from": { "enum": ["reference", "candidate"] },
+        "reference_type": { "type": "string" },
+        "candidate_type": { "type": "string" },
+        "count": { "type": "integer", "minimum": 2 },
+        "reference": { "$ref": "#/$defs/scalar" },
+        "candidate": { "$ref": "#/$defs/scalar" },
+        "delta": { "oneOf": [{ "type": "number", "minimum": 0 }, { "const": "Inf" }] },
+        "tolerance": { "type": ["number", "null"] }
+      }
+    }
+  }
+}
