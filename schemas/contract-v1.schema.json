@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zhuygln/equivR/schemas/contract-v1.schema.json",
+  "title": "equivR equivalence contract v1",
+  "description": "Declares what must hold for a candidate artifact to be accepted as equivalent to a trusted reference. Every check is required unless marked optional.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "keys"],
+  "properties": {
+    "version": { "const": "equivr-contract/v1" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "reference": { "$ref": "#/$defs/artifact" },
+    "candidate": { "$ref": "#/$defs/artifact" },
+    "keys": { "$ref": "#/$defs/nonEmptyNames" },
+    "fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": { "$ref": "#/$defs/names" },
+        "ignore": { "$ref": "#/$defs/names" },
+        "exact": { "$ref": "#/$defs/names" },
+        "capture_only": { "$ref": "#/$defs/names" }
+      }
+    },
+    "missing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": { "$ref": "#/$defs/missingRule" },
+        "fields": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/missingRule" }
+        }
+      }
+    },
+    "tolerance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "abs": { "$ref": "#/$defs/tolerance" },
+        "rel": { "$ref": "#/$defs/tolerance" },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "abs": { "$ref": "#/$defs/tolerance" },
+              "rel": { "$ref": "#/$defs/tolerance" }
+            }
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/checkId" },
+      "additionalProperties": { "enum": ["required", "optional"] }
+    },
+    "results": {
+      "description": "Reserved for structured analytical results (planned). Must be empty in v1.",
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "$defs": {
+    "name": { "type": "string", "minLength": 1 },
+    "names": {
+      "oneOf": [
+        { "$ref": "#/$defs/name" },
+        { "type": "array", "items": { "$ref": "#/$defs/name" }, "uniqueItems": true }
+      ]
+    },
+    "nonEmptyNames": {
+      "oneOf": [
+        { "$ref": "#/$defs/name" },
+        { "type": "array", "items": { "$ref": "#/$defs/name" }, "uniqueItems": true, "minItems": 1 }
+      ]
+    },
+    "artifact": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "format": { "enum": ["csv", "rds"] },
+            "description": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "missingRule": { "enum": ["match", "forbid"] },
+    "tolerance": {
+      "description": "Non-negative number. Numeric strings such as \"1e-8\" are accepted because YAML 1.1 parses them as strings.",
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "string", "pattern": "^[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$" }
+      ]
+    },
+    "checkId": {
+      "enum": [
+        "schema.missing_fields", "schema.extra_fields", "schema.type_mismatch",
+        "keys.present", "keys.unique_reference", "keys.unique_candidate",
+        "rows.missing_in_candidate", "rows.extra_in_candidate",
+        "values.missingness", "values.exact", "values.numeric"
+      ]
+    }
+  }
+}
