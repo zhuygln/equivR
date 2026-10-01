@@ -28,11 +28,17 @@ We request **$5,000 over four months** for project labor. No funds are requested
 
 # The Problem
 
-Modernizing analytical software - legacy R to modern R, SAS or Python to R, package replacement, refactoring, or AI-assisted rewrite - raises a question beyond whether the new code runs: does it preserve the analytical behavior that matters? This affects R developers, maintainers, and analytical teams that need independent evidence before adopting a new implementation.
+Recent R Consortium discussion on making R submissions reviewable for FDA highlights a practical challenge: reviewers may be able to receive R code but still struggle to recreate the sponsor's environment, install dependencies, or reproduce the submitted results [@reviewable2026]. As R becomes a more important open-source option for clinical-trial analysis, reviewability and reproducibility become as important as whether the code runs at all.
 
-Today acceptance criteria such as keys, missing-value rules, ignored metadata, numerical tolerances, estimates, and confidence intervals are often scattered across project-specific tests. AI increases the risk: plausible code can be subtly wrong, and self-review by the same model is not independent evidence.
+The R Submissions Working Group is already addressing this problem. Its 2026 plan includes environment-preservation approaches such as containers and WebAssembly, and it also plans to expand the use of AI and automation in future submission pipelines [@submissions2026].
 
-The R Consortium Submissions Working Group demonstrates the value of reference-based validation: Pilot 5 compares R-generated ADaM datasets with prior reference datasets in CI [@pilot5], while Working Group materials emphasize reproducibility, reviewability, and expanding AI/automation work [@reviewable2026; @submissions2026]. Existing object/data-frame comparison tools cover pieces of this workflow, but not a reusable layer joining declared contracts, cross-runtime normalization, analytical results, provenance, CI gating, diagnostics, and re-validation. `equivR` targets that gap for the R community.
+Preserving an old environment, however, does not solve every long-term problem. R versions and packages change, legacy code becomes difficult to maintain, and organizations eventually need to refactor or migrate analytical workflows. At that point the question becomes:
+
+> Can we change the implementation while preserving the analytical behavior that made the original workflow trustworthy?
+
+Today, teams usually answer this with project-specific comparison scripts and manual review. There is no common infrastructure for defining what must remain equivalent and then checking those requirements across legacy R, modern R, SAS, Python, or AI-assisted rewrites.
+
+Large language models make modernization easier, but they cannot be trusted to validate their own output. `equivR` therefore targets the missing layer: LLM-assisted modernization combined with independent equivalence validation, so analytical workflows can evolve while remaining reproducible, reviewable, and trustworthy.
 
 # The proposal
 
