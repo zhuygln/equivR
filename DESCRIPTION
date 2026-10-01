@@ -1,0 +1,27 @@
+Package: equivR
+Title: Reproducible Cross-Runtime Equivalence for R Analytics
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Yonglin", "Zhu", , "zhuygln@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0245-827X")),
+    person("Xing", "Cai", , "caixingtt@gmail.com", role = "aut",
+           comment = c(ORCID = "0009-0004-5983-3338"))
+  )
+Description: Validates whether a candidate analytical implementation reproduces
+    the data results of a trusted reference under an explicit, versioned
+    equivalence contract. Acceptance is deterministic and fail-closed: a
+    candidate passes only when every required check passes, and every
+    result carries machine-readable diagnostics and artifact checksums.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends: R (>= 4.1.0)
+Imports:
+    digest,
+    jsonlite,
+    utils,
+    yaml
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
