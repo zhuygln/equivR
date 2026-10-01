@@ -29,7 +29,7 @@ The grant does **not** fund a general SAS-to-R or Python-to-R translator, a codi
 ## Project leads
 
 - **Yonglin Zhu — co-PI / co-lead; Senior Staff Scientist at SAS Institute** ([ORCID](https://orcid.org/0000-0003-0245-827X))
-- **Xing Cai — co-PI / co-lead; founding member of the R Working Group at PPD** ([LinkedIn](https://www.linkedin.com/in/xingcai))
+- **Xing Cai — co-PI / co-lead; founding member of the R Working Group at PPD** ([ORCID](https://orcid.org/0009-0004-5983-3338), [LinkedIn](https://www.linkedin.com/in/xingcai))
 
 Both project leads have current employers, but `equivR` is independent open-source work. It is not sponsored, funded, directed, or endorsed by either employer, and it does not depend on employer-owned code, data, infrastructure, or proprietary resources.
 

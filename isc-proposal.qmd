@@ -6,6 +6,7 @@ author:
     affiliations:
       - "Independent open-source project"
   - name: Xing Cai
+    orcid: 0009-0004-5983-3338
     affiliations:
       - "Independent open-source project"
 
