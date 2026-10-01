@@ -1,54 +1,31 @@
 # Project plan
 
-The project will run for four months. We will build the deterministic validation core first, demonstrate it on SAS -> R, then apply the same workflow to legacy R -> modern R, and finish with the LLM repair loop, documentation, and release.
+The project will run for four months. We will build the deterministic validation core first, demonstrate it on SAS -> R, then apply the same workflow to legacy R -> modern R, and finish with the repair loop, documentation, and release.
 
 ## Start-up phase
 
-**Month 1.** Finalize project governance and MPL-2.0 licensing, define the first equivalence-contract format, and implement the initial deterministic validator for keys, schema, missing values, categorical values, numerical tolerances, and selected analytical results.
-
-In parallel, prepare the first SAS -> R benchmark and pregenerate trusted SAS reference artifacts so public CI does not require a SAS runtime.
+**Month 1.** Finalize governance and MPL-2.0 licensing, define the first equivalence-contract format, implement the initial deterministic validator, and prepare the SAS -> R benchmark with pregenerated trusted reference artifacts.
 
 By the end of Month 1, `equivR` should accept a reference artifact, an R candidate result, and an equivalence contract, then return deterministic PASS/FAIL status with structured diagnostics.
 
 ## Technical delivery
 
-**M1 - Equivalence contract and deterministic validation** (Month 1-2 — $1,250). Implement the reusable contract, dataset/result comparison, structured diagnostics, and tests. Any failed required check must block acceptance.
+| Milestone | Timing | Deliverable | Amount |
+|----|------|------------------------------|-----:|
+| M1 | Month 1-2 | Equivalence contract, deterministic dataset/result validation, diagnostics, tests | $1,250 |
+| M2 | Month 1-2 | SAS -> R modernization demonstration using pregenerated SAS reference artifacts | $1,000 |
+| M3 | Month 2-3 | Legacy R -> modern R demonstration, R-friendly invocation, CI workflow, benchmark format | $1,000 |
+| M4 | Month 3-4 | Model-independent bounded LLM repair loop and reproducibility evidence | $750 |
+| M5 | Month 4 | Documentation, examples, release hardening, and initial tagged release | $1,000 |
 
-**M2 - SAS -> R modernization demonstration** (Month 1-2 — $1,000). Use pregenerated SAS outputs as the trusted reference. An LLM produces or repairs an R implementation; `equivR` executes, normalizes, and validates the R outputs against the SAS reference. If the LLM cannot complete the transformation automatically, the candidate may be manually repaired. The validator remains the core deliverable.
-
-**M3 - Legacy R -> modern R and R-facing workflow** (Month 2-3 — $1,000). Apply the same workflow to a legacy R refactoring case. Add an R-friendly command or thin wrapper, a reference CI workflow, and a documented format for future benchmark contributions. This demonstrates that the approach generalizes beyond SAS migration to long-term maintenance of R code.
-
-**M4 - Model-independent repair loop and reproducibility evidence** (Month 3-4 — $750). Connect failed validation diagnostics to a bounded LLM repair loop:
-
-```
-generate/repair -> execute -> validate
-                  PASS -> accept
-                  FAIL -> diagnose -> repair again
-```
-
-The LLM interface will be model/provider independent. Validation remains deterministic and is the only authority for acceptance. Record validation results, contract version, checksums, runtime/session information, source revision, and model metadata when an LLM is used.
-
-**M5 - Documentation and release** (Month 4 — $1,000). Complete user and architecture documentation, SAS -> R and legacy R -> modern R examples, benchmark contribution guidance, tests, CI, and an initial tagged release.
-
-**Failure recovery.** If an LLM cannot produce a correct candidate, we narrow or manually repair the example while preserving the validation experiment. Unsupported SAS/R behavior will be documented rather than treated as verified. Model-provider failure will not affect deterministic CI, and the repair loop will stop after a bounded number of attempts.
+**Failure recovery.** If an LLM cannot produce a correct candidate, we will narrow or manually repair the example while preserving the validation experiment. Unsupported SAS/R behavior will be documented rather than treated as verified. Model-provider failure will not affect deterministic CI, and the repair loop will stop after a bounded number of attempts.
 
 ## Other aspects
 
-Development will be public under MPL-2.0, with community feedback and benchmark contributions through the repository.
-
-Phase 1 remains intentionally narrow: two small benchmark cases, artifact-based validation, and no requirement for live SAS in CI. Future cases can extend the same framework to additional SAS -> R, Python -> R, package-migration, and other analytical modernization workflows.
-
-No licensed SAS software, proprietary LLM subscription, cloud service, or AI credit will be charged to the grant.
+Development will be public under MPL-2.0, with feedback and benchmark contributions through the repository. Phase 1 remains intentionally narrow: two small benchmark cases, artifact-based validation, and no requirement for live SAS in CI.
 
 ## Budget & funding plan
 
-| Milestone | Amount |
-|---|---:|
-| M1 - Equivalence contract and deterministic validation | $1,250 |
-| M2 - SAS -> R modernization demonstration | $1,000 |
-| M3 - Legacy R -> modern R and R-facing workflow | $1,000 |
-| M4 - Model-independent repair loop and reproducibility evidence | $750 |
-| M5 - Documentation and release | $1,000 |
-| **Total** | **$5,000** |
+**Total requested: $5,000.** The milestone amounts are shown above.
 
 No grant funds are requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
