@@ -24,7 +24,7 @@ Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted
 
 ## Contributors
 
-None yet; contributions will be invited through the public repository.
+The co-PIs have already prepared this proposal and a public prototype at <https://github.com/zhuygln/equivR>: a base-R proof of concept with worked examples, a Phase 1 implementation plan, and early contract-v1 validation code with tests and CI. Community contributions will be invited through the repository.
 
 ## Consulted
 
