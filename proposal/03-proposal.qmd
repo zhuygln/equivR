@@ -2,38 +2,96 @@
 
 ## Overview
 
-Over four months, `equivR` will provide cross-runtime validation for R modernization. Trusted references may originate in legacy R, SAS, Python, or another runtime; candidates may be modern R, refactors, package migrations, or AI-assisted code. Runtime adapters normalize artifacts, a deterministic core applies a language-neutral equivalence contract, and R-facing CLI/wrapper/CI workflows expose results.
+`equivR` will provide a practical way to modernize analytical code without giving up the trusted behavior of the original workflow.
+
+The first target is SAS -> R. A trusted SAS workflow will be used to generate reference artifacts. An LLM will produce or revise an R implementation, and `equivR` will independently compare the R results with the trusted SAS reference. If required checks fail, the diagnostics are returned for another repair attempt. The candidate is accepted only when all declared checks pass.
+
+> **Generation proposes; validation decides.**
+
+This approach builds on our previous SAS -> Python modernization work, but the new project is centered on R and on a reusable validation workflow rather than on a single translation system.
+
+Over four months, we will:
+
+1. define a machine-readable equivalence contract;
+2. implement deterministic comparison of datasets and selected analytical results;
+3. demonstrate SAS -> R modernization using pregenerated SAS reference artifacts;
+4. demonstrate legacy R -> modern R using the same validation framework;
+5. connect validation diagnostics to a model-independent LLM repair loop; and
+6. provide an R-friendly workflow, CI example, documentation, and an initial release.
+
+For the R community, the benefit is a second path to long-term reviewability. Instead of preserving an old runtime indefinitely, a workflow can be modernized while the trusted implementation remains the reference for what must not change.
 
 ## Detail
 
+The project separates code generation from acceptance.
+
+The LLM is responsible for proposing a refactor, translation, or repair. `equivR` is responsible for deciding whether that proposal is analytically equivalent to the trusted reference.
+
+The basic workflow is shown in @fig-equivr-overview.
+
+![`equivR` modernization and validation workflow. An LLM (or developer) proposes a candidate implementation, which is executed and normalized alongside trusted reference artifacts. The deterministic core applies the equivalence contract and accepts the candidate only when all required checks pass; otherwise it returns structured diagnostics for repair and re-validation.](figures/equivR_graphviz_swimlane_v2.pdf){#fig-equivr-overview width=100% fig-pos="htb"}
+
+The first demonstration will use a trusted SAS workflow and an R candidate. The second will use legacy R and modern R. Together, these cases show that the same validation layer can support both cross-runtime migration and long-term maintenance within R.
+
 ### Minimum Viable Product
 
-The Phase 1 MVP will let a user:
+The Phase 1 MVP will allow a user to:
 
-1. provide trusted reference artifacts and a candidate in an R modernization workflow;
-2. declare keys, schema/missingness rules, ignored fields, numerical tolerances, and required analytical outputs;
-3. normalize and compare datasets and selected structured results;
-4. receive deterministic pass/fail status, repair-oriented diagnostics, reproducibility metadata, and machine-/human-readable evidence; and
-5. invoke validation from an R-friendly CLI or thin wrapper and CI.
+1. provide trusted reference artifacts and source code to be modernized;
+2. generate or revise an R candidate with a selected LLM;
+3. declare what must remain equivalent, including:
+   * row keys and identity;
+   * required variables and schema;
+   * missing-value behavior;
+   * ignored metadata;
+   * exact categorical values;
+   * numerical tolerances; and
+   * selected results such as estimates, confidence intervals, counts, and p-values;
+4. execute the R candidate and normalize its outputs;
+5. receive deterministic PASS/FAIL status with structured diagnostics;
+6. send failed diagnostics back to the LLM for another repair attempt; and
+7. record machine-readable and human-readable validation evidence.
 
-Version 1 covers row identity, required variables, missing values, exact categorical values, tolerance-aware numeric values, and named results such as estimates, confidence intervals, counts, and p-values.
+Two public examples will be delivered:
 
-The initial benchmark suite will include **(1) legacy R -> modern R** and **(2) cross-runtime trusted reference -> R**, using pregenerated artifacts so no licensed SAS runtime is required in CI. A documented community format will support additional package-replacement, refactoring, Python-to-R, SAS-to-R, or AI-assisted R cases.
+* SAS -> R, using pregenerated SAS reference artifacts so a SAS runtime is not required in CI; and
+* legacy R -> modern R, showing that the same workflow applies to R maintenance and refactoring.
 
-**Scope boundary.** This grant does not fund a general translator, coding agent, live SAS integration, regulatory certification, or universal program-equivalence proof. The deliverable is the independent validation infrastructure and R-centered benchmark workflows.
-
-![`equivR` validation workflow. Candidate implementations execute and emit artifacts that are normalized alongside trusted reference artifacts; the deterministic core applies a language-neutral equivalence contract and requires all declared checks to pass before acceptance, otherwise returning structured diagnostics that drive repair and re-validation. R-facing CLI, wrapper, and CI entry points consume validation evidence.](figures/equivR_graphviz_swimlane_v2.pdf){#fig-equivr-overview width=85% fig-pos="H"}
+A contribution format will allow additional community cases to be added later.
 
 ### Architecture
 
-`equivR` separates: (1) a language-neutral contract; (2) runtime adapters/artifact normalization; (3) a deterministic validation core implemented in R and/or Python; (4) an R-facing workflow layer; and (5) evidence generation. A bounded LLM-revised R example demonstrates **generate -> validate -> diagnose -> repair -> revalidate**.
+Phase 1 has four main components.
 
-**LLM dependency and model independence.** The closed-loop `equivR` workflow depends on an LLM to generate or revise candidate code in response to validation diagnostics. However, the framework is intentionally **model-provider independent**: it does not rely on a particular proprietary API, model family, or vendor. Any sufficiently capable contemporary general-purpose LLM can be used through the model interface, including leading proprietary or open-weight models available in 2026. The LLM proposes transformations or repairs; deterministic `equivR` validation remains the authority that decides whether a candidate is accepted.
+**1. LLM modernization interface.** A model-independent interface sends source code, task context, and validation diagnostics to an LLM and receives a proposed implementation or repair. `equivR` will not depend on one model provider or model family.
+
+**2. Equivalence contract.** A machine-readable contract defines what behavior must be preserved. This makes acceptance criteria explicit instead of scattering them across one-off scripts and manual review.
+
+**3. Runtime and artifact layer.** The candidate is executed and its outputs are converted into a common form for comparison. Trusted SAS artifacts may be generated ahead of time, so the proprietary runtime does not need to be present in CI.
+
+**4. Deterministic validator and evidence.** The validator applies the contract to the trusted and candidate artifacts. Any failed required check blocks acceptance and produces structured diagnostics. Passing runs produce reproducibility metadata and validation evidence that can be used locally or in CI.
+
+The R-facing interface will be kept thin: an R-friendly command or wrapper will invoke the workflow without requiring users to interact directly with the internal orchestration layer.
 
 ### Assumptions
 
-Users can identify a trusted reference and express important criteria through structured datasets and selected analytical results, using explicit tolerances where appropriate. Delivery risk is controlled by limiting Phase 1 to artifact-based validation, pregenerated cross-runtime references, small adapters, two benchmark cases, and a community contribution format. Behavior outside the declared contract is not claimed to be verified.
+The project depends on a few explicit assumptions.
+
+* A trusted reference implementation or trusted reference artifacts are available.
+* The behavior that matters can be expressed through datasets and selected analytical results.
+* Acceptable differences can be stated explicitly, including numerical tolerances where exact equality is not appropriate.
+* General-purpose LLMs are capable of producing useful SAS -> R and legacy R -> modern R candidates when given source code and repair diagnostics.
+
+If an LLM cannot complete a transformation, the validation layer still remains useful: it can evaluate human-written or externally generated candidates. If a behavior cannot be represented by the Phase 1 contract, that behavior will be documented as out of scope rather than treated as verified.
+
+Phase 1 deliberately limits scope to small, testable examples and artifact-based validation. It does not attempt to prove universal program equivalence or cover every SAS/R feature.
 
 ### External dependencies
 
-The project uses open-source R/Python libraries and standard CI tooling, with no licensed-SAS dependency; proprietary reference artifacts can be generated beforehand. `equivR` requires access to an LLM for its automated generate–validate–diagnose–repair workflow, but not to any specific model or provider. The implementation will expose a model-agnostic interface so users can select among capable contemporary LLMs. Open/local models and proprietary hosted APIs are both supported. Proprietary API charges used during project evaluation will be self-funded or provided in-kind rather than charged to the ISC grant.
+The project will use open-source R and Python libraries, standard CI tooling, and existing general-purpose LLMs.
+
+The automated modernization loop requires access to an LLM, but not to any particular vendor. The interface will allow different capable hosted or local models to be used.
+
+SAS is needed only to create the trusted reference artifacts for the initial SAS -> R example. The shipped CI workflow will use pregenerated artifacts and will not require licensed SAS software.
+
+Any proprietary model API costs used during development or evaluation will be self-funded or provided in kind rather than charged to the ISC grant.
