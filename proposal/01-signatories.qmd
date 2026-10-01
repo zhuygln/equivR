@@ -8,7 +8,7 @@
 
 **Yonglin Zhu** — co-PI / co-lead. Led a completed SAS-to-Python modernization framework combining AI-assisted transformation with numerical-equivalence validation. Leads architecture, contract design, and the validator.
 
-**Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at PPD, working across SAS and R analytics. Leads use-case design, benchmarks, testing, and documentation.
+**Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at Thermo Fisher Scientific Inc., working across SAS and R analytics. Leads use-case design, benchmarks, testing, and documentation.
 
 `equivR` is independent open-source work, not sponsored, funded, or endorsed by either co-PI's employer, and does not use employer-owned code, data, or infrastructure.
 
