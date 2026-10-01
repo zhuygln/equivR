@@ -170,7 +170,7 @@ Any proprietary model API costs used during development or evaluation will be se
 
 ## Start-up phase
 
-**Month 1.** Finalize governance, **MIT license**, contribution guidance, CI/reporting, the contract schema, validation-result model, and core/adapter boundary. The existing proof of concept already demonstrates exact-match, within-tolerance, mismatch, and structural-failure cases.
+**Month 1.** Finalize governance, **MPL-2.0 license**, contribution guidance, CI/reporting, the contract schema, validation-result model, and core/adapter boundary. The existing proof of concept already demonstrates exact-match, within-tolerance, mismatch, and structural-failure cases.
 
 ## Technical delivery
 
@@ -186,7 +186,7 @@ Any proprietary model API costs used during development or evaluation will be se
 
 ## Other aspects
 
-Development is public at <https://github.com/zhuygln/equivR> under the **MIT License**, with a documented community benchmark format and feedback through GitHub issues/discussions. We will publish project announcement and completion/update material suitable for R Consortium/community channels.
+Development is public at <https://github.com/zhuygln/equivR>; the open-source `equivR` core will be released under the **Mozilla Public License 2.0 (MPL-2.0)**, with a documented community benchmark format and feedback through GitHub issues/discussions. We will publish project announcement and completion/update material suitable for R Consortium/community channels.
 
 ## Budget & funding plan
 
