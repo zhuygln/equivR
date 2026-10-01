@@ -2,23 +2,19 @@
 
 ## Definition of done
 
-Phase 1 is complete when both SAS -> R and legacy R -> modern R workflows run from a clean checkout, use explicit equivalence contracts, return deterministic diagnostics, and produce reproducible validation evidence.
+Phase 1 is done when the SAS -> R and legacy R -> modern R workflows both run from a clean checkout, use explicit equivalence contracts, and produce deterministic diagnostics and reproducible validation evidence.
 
-A live SAS runtime will not be required in CI. The automated repair loop will be model/provider independent, and the LLM will never determine acceptance.
+No live SAS runtime is required in CI. The repair loop is model/provider independent, and the LLM never determines acceptance.
 
 ## Measuring success
 
-Success means:
-
-- both benchmark cases reproduce from a clean checkout;
-- every declared required mismatch fails with actionable diagnostics;
-- the SAS -> R example validates against pregenerated trusted artifacts;
-- an R-friendly invocation path and CI example are documented;
-- reproducibility metadata and machine-readable evidence are produced; and
-- an initial public release is published.
+- Both benchmark cases reproduce from a clean checkout, including SAS -> R using pregenerated trusted artifacts.
+- Every required mismatch fails with actionable diagnostics.
+- R-friendly local/CI invocation produces reproducibility metadata and machine-readable evidence.
+- An initial public release is published.
 
 The goal is not to show that an LLM can translate every analytical program. The goal is to show that modernization can be made verifiable: generation may vary, but acceptance remains deterministic.
 
 ## Future work
 
-Future work may extend the framework to additional SAS -> R and Python -> R cases, richer analytical result types, live runtime adapters, repository-scale modernization, and more automated multi-step repair. The benchmark format can also grow through community contributions and future R Consortium submission-oriented use cases.
+The framework can extend to more SAS -> R and Python -> R cases, richer analytical result types, live runtime adapters, repository-scale modernization, and more automated repair, with the benchmark suite growing through community contributions.

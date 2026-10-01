@@ -2,15 +2,15 @@
 
 ## Project team
 
-**Yonglin Zhu** — co-PI / co-lead. Senior Staff Scientist at SAS Institute. Led development of a completed SAS-to-Python modernization framework using AI-assisted transformation, hybrid SAS/Python execution, and numerical-equivalence validation. Leads architecture, equivalence-contract design, and validation workflow implementation.
+**Yonglin Zhu** — co-PI / co-lead. Led a completed SAS-to-Python modernization framework combining AI-assisted transformation with numerical-equivalence validation. Leads architecture, contract design, and the validator.
 
-**Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at PPD, with experience in SAS, R, Python, statistical modeling, and data-science workflows. Co-leads R-community use-case design, benchmark development, testing, documentation, and applied evaluation.
+**Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at PPD, working across SAS and R analytics. Leads use-case design, benchmarks, testing, and documentation.
 
-`equivR` is independent open-source work. It is not sponsored, funded, or endorsed by either co-PI's employer and does not depend on employer-owned code, data, or infrastructure.
+`equivR` is independent open-source work, not sponsored, funded, or endorsed by either co-PI's employer, and does not use employer-owned code, data, or infrastructure.
 
 ## Contributors
 
-None at submission time. Community contributions will be invited through the public repository and benchmark process.
+None yet; contributions will be invited through the public repository.
 
 ## Consulted
 

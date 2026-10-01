@@ -3,15 +3,15 @@ title: "equivR: Reproducible Cross-Runtime Equivalence for R Analytics"
 author:
   - name: Yonglin Zhu
     orcid: 0000-0003-0245-827X
-    email: zhuygln@gmail.com
     affiliations:
       - "Independent open-source project"
   - name: Xing Cai
     orcid: 0009-0004-5983-3338
-    email: caixingtt@gmail.com
     affiliations:
       - "Independent open-source project"
 
+date: today
+date-format: iso
 format:
   html:
     embed-resources: true

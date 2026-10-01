@@ -2,58 +2,46 @@
 
 ## Overview
 
-`equivR` will provide a practical way to modernize analytical code without giving up the trusted behavior of the original workflow.
+`equivR` will let teams modernize analytical code while keeping the trusted implementation as the authority for what must not change.
 
-The first target is SAS -> R. A trusted SAS workflow provides reference artifacts; an LLM produces or repairs an R implementation; and `equivR` independently validates the R outputs against the SAS reference. Failed checks return structured diagnostics for another repair attempt. A candidate is accepted only when all declared checks pass.
+The first target is SAS -> R. A trusted SAS workflow provides reference artifacts; an LLM produces or repairs an R implementation; `equivR` validates the R outputs against the SAS reference and returns structured diagnostics on failure. A candidate is accepted only when all declared checks pass. The same framework is then applied to legacy R -> modern R.
 
-The same framework will then be demonstrated on legacy R -> modern R. This shows that the approach supports both cross-runtime migration and long-term maintenance within R.
-
-Over four months we will deliver the equivalence contract, deterministic validation core, both benchmark workflows, a model-independent repair loop, an R-friendly local/CI interface, documentation, and an initial release.
+For the R community, this offers a second path to long-term reviewability: instead of preserving an old runtime indefinitely, a workflow can be modernized with verifiable evidence that its analytical behavior is unchanged.
 
 ## Detail
 
-The project separates code generation from acceptance. An LLM may propose a refactor, translation, or repair; only deterministic `equivR` validation decides whether the result preserves the trusted analytical behavior.
+The project separates code generation from acceptance: an LLM may propose a refactor, translation, or repair, but only deterministic `equivR` validation decides whether the result preserves the trusted analytical behavior (@fig-equivr-overview).
 
-@fig-equivr-overview summarizes the workflow.
-
-![`equivR` modernization and validation workflow. An LLM (or developer) proposes a candidate implementation, which is executed and normalized alongside trusted reference artifacts. The deterministic core applies the equivalence contract and accepts the candidate only when all required checks pass; otherwise it returns structured diagnostics for repair and re-validation.](figures/equivR-workflow.pdf){#fig-equivr-overview width=100% fig-pos="htb"}
+![LLM-generated candidates are accepted only after deterministic validation against trusted reference artifacts.](figures/equivR-workflow.pdf){#fig-equivr-overview width=100% fig-pos="htb"}
 
 ### Minimum Viable Product
 
 The Phase 1 MVP will let a user:
 
 1. provide trusted reference artifacts and an R candidate;
-2. declare an equivalence contract covering keys, schema, missingness, categorical values, numerical tolerances, and selected analytical results;
-3. run deterministic validation locally or in CI and receive PASS/FAIL status with structured diagnostics; and
-4. return failed diagnostics to an LLM for bounded repair and re-validation.
+2. define an equivalence contract (keys, schema, missingness, categorical values, numerical tolerances, selected analytical results);
+3. run deterministic validation locally or in CI, with PASS/FAIL status and structured diagnostics; and
+4. feed failures into a bounded LLM repair and re-validation loop.
 
-Two public examples will be delivered:
-
-- SAS -> R, using pregenerated SAS reference artifacts so SAS is not required in CI; and
-- legacy R -> modern R, using the same validation framework.
+Two public examples will be delivered: SAS -> R, using pregenerated SAS reference artifacts; and legacy R -> modern R, using the same framework.
 
 ### Architecture
 
-Phase 1 has four components:
-
 1. **LLM modernization interface** — model-independent generation and repair.
-2. **Equivalence contract** — machine-readable definition of what behavior must be preserved.
-3. **Runtime/artifact layer** — execute the R candidate and normalize candidate/reference outputs.
-4. **Deterministic validator and evidence** — apply the contract, block acceptance on any required failure, and emit diagnostics plus reproducibility evidence.
+2. **Equivalence contract** — machine-readable definition of the behavior to preserve.
+3. **Runtime/artifact layer** — executes the R candidate and normalizes candidate and reference outputs.
+4. **Deterministic validator and evidence** — applies the contract, blocks acceptance on any required failure, and emits diagnostics and reproducibility evidence.
 
-An R-friendly command or thin wrapper will expose the workflow without requiring users to interact directly with orchestration internals.
+A thin R-friendly command or wrapper exposes the workflow without requiring users to touch orchestration internals.
 
 ### Assumptions
 
 - Trusted reference artifacts are available.
-- Important behavior can be represented through datasets and selected analytical results.
-- Acceptable differences can be stated explicitly, including tolerances where exact equality is inappropriate.
-- General-purpose LLMs can produce useful candidate transformations when given source code and validation diagnostics.
+- Important behavior can be expressed through datasets and selected results, with acceptable differences (such as tolerances) stated explicitly.
+- General-purpose LLMs can produce useful candidate transformations from source code and validation diagnostics.
 
-If an LLM cannot complete a transformation, `equivR` can still validate a human-written or externally generated candidate. Unsupported behavior will be documented rather than treated as verified.
+If an LLM cannot complete a transformation, `equivR` can still validate a human-written or externally generated candidate; unsupported behavior is documented rather than treated as verified.
 
 ### External dependencies
 
-The project will use open-source R/Python libraries, standard CI tooling, and existing general-purpose LLMs. The automated loop requires an LLM but not a particular vendor or model family.
-
-SAS is needed only to generate the initial trusted reference artifacts; public CI will use pregenerated artifacts and will not require licensed SAS software. Proprietary model API costs used during development or evaluation will be self-funded or provided in kind.
+The project uses open-source R/Python libraries, standard CI tooling, and access to a general-purpose LLM, without depending on a particular vendor or model family. SAS is needed only to pregenerate the trusted reference artifacts; public CI will not require licensed SAS software. Proprietary model API costs will be self-funded or provided in kind.

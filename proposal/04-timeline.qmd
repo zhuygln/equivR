@@ -1,35 +1,27 @@
 # Project plan
 
-The project will run for four months. We will build the deterministic validation core first, demonstrate it on SAS -> R, then apply the same workflow to legacy R -> modern R, and finish with the repair loop, documentation, and release.
-
 ## Start-up phase
 
-**Month 1.** Finalize governance and MPL-2.0 licensing, define the first equivalence-contract format, implement the initial deterministic validator, and prepare the SAS -> R benchmark with pregenerated trusted reference artifacts.
-
-By the end of Month 1, `equivR` should accept a reference artifact, an R candidate result, and an equivalence contract, then return deterministic PASS/FAIL status with structured diagnostics.
-
-```{=latex}
-\newpage
-```
+**Month 1.** Finalize governance and MPL-2.0 licensing, define the first equivalence-contract format, implement the initial deterministic validator, and prepare the SAS -> R benchmark with pregenerated reference artifacts. By the end of Month 1, `equivR` should take a reference artifact, an R candidate result, and a contract, and return deterministic PASS/FAIL status with structured diagnostics.
 
 ## Technical delivery
 
 | Milestone | Timing | Deliverable | Amount |
 |----|------|------------------------------|-----:|
-| M1 | Month 1-2 | Equivalence contract, deterministic dataset/result validation, diagnostics, tests | $1,250 |
-| M2 | Month 1-2 | SAS -> R modernization demonstration using pregenerated SAS reference artifacts | $1,000 |
-| M3 | Month 2-3 | Legacy R -> modern R demonstration, R-friendly invocation, CI workflow, benchmark format | $1,000 |
+| M1 | Month 1-2 | Equivalence contract, deterministic validation, diagnostics, tests | $1,250 |
+| M2 | Month 1-2 | SAS -> R modernization demonstration | $1,000 |
+| M3 | Month 2-3 | Legacy R -> modern R, R-friendly invocation, CI, benchmark format | $1,000 |
 | M4 | Month 3-4 | Model-independent bounded LLM repair loop and reproducibility evidence | $750 |
-| M5 | Month 4 | Documentation, examples, release hardening, and initial tagged release | $1,000 |
+| M5 | Month 4 | Documentation, examples, release hardening, tagged release | $1,000 |
 
-**Failure recovery.** If an LLM cannot produce a correct candidate, we will narrow or manually repair the example while preserving the validation experiment. Unsupported SAS/R behavior will be documented rather than treated as verified. Model-provider failure will not affect deterministic CI, and the repair loop will stop after a bounded number of attempts.
+**Failure recovery.** If an LLM cannot produce a correct candidate, we will narrow or manually repair the example while preserving the validation experiment. Unsupported SAS/R behavior will be documented as out of scope. Model-provider failure will not affect deterministic CI, and the repair loop stops after a bounded number of attempts.
 
 ## Other aspects
 
-Development will be public under MPL-2.0, with feedback and benchmark contributions through the repository. Phase 1 remains intentionally narrow: two small benchmark cases, artifact-based validation, and no requirement for live SAS in CI.
+Development will be public under MPL-2.0, with feedback and benchmark contributions through the repository. Phase 1 stays narrow: two small benchmark cases, artifact-based validation, and no live SAS in CI.
 
 ## Budget & funding plan
 
-**Total requested: $5,000.** The milestone amounts are shown above.
+**Total requested: $5,000.** Milestone amounts are shown above.
 
 No grant funds are requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
