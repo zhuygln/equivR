@@ -1,7 +1,9 @@
 # Executive Summary
 
-R is increasingly used for clinical-trial analysis and regulatory submissions, but long-term reviewability is hard as packages, runtimes, and dependencies change. Preserving the environment helps; eventually, some workflows must be refactored or migrated instead. `equivR` supports that step: modernize trusted analytical code while independently verifying that its analytical behavior is preserved.
+R is becoming an important open-source option for clinical-trial analysis and regulatory submissions, but long-term reviewability remains a practical challenge as packages, runtimes, and dependencies change. Environment preservation helps, but some analytical workflows eventually need to be refactored or migrated rather than frozen in place.
+
+`equivR` addresses that next step: modernize trusted analytical code while independently verifying that its analytical behavior is preserved.
 
 > **Generation proposes; validation decides.**
 
-Phase 1 demonstrates SAS -> R modernization first, then legacy R -> modern R. Over four months, we will release an open-source `equivR` core (MPL-2.0) with deterministic validation and a model-independent LLM repair loop.
+Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted SAS reference artifacts, then apply the same workflow to legacy R -> modern R. Over four months, the project will deliver an open-source `equivR` core under MPL-2.0 with deterministic equivalence validation, structured diagnostics, a model-independent LLM repair loop, R-friendly local/CI workflows, and reproducibility evidence.
