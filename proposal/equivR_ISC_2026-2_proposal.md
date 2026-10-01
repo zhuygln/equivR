@@ -4,13 +4,19 @@
 
 # Executive Summary
 
-`equivR` is an open-source cross-runtime validation toolkit for R modernization, migration, and refactoring. R is the community focus; the implementation language of a trusted reference or candidate is outside the trust model, and Python may be used internally for orchestration.
+R is becoming an important open-source option for clinical-trial analysis and regulatory submissions, but long-term reviewability remains a practical challenge. Recreating an old R environment can be difficult as packages, runtimes, and dependencies change. Containers and environment preservation help, but eventually some analytical workflows must be refactored or migrated rather than frozen in place.
+
+`equivR` addresses that next step: how do we modernize trusted analytical code without losing the behavior that made the original workflow trustworthy?
+
+The project combines LLM-assisted code modernization with independent, deterministic validation:
 
 > **Generation proposes; validation decides.**
 
-A translator, LLM, or developer may produce code, but acceptance requires execution against an explicit equivalence contract. Any failed required check blocks acceptance and returns deterministic diagnostics for repair and re-validation.
+In the first Phase 1 demonstration, a trusted SAS workflow will be modernized to R. The LLM may generate or repair the R implementation, but `equivR` will decide acceptance by comparing its outputs with pregenerated trusted SAS reference artifacts under an explicit equivalence contract. A second demonstration will apply the same workflow to legacy R -> modern R, showing that the approach supports both cross-runtime migration and long-term maintenance within R.
 
-A minimal proof of concept already demonstrates exact, tolerance-aware, and structural checks. The project also builds on prior delivery of a completed SAS-to-Python modernization framework using AI-assisted transformation, hybrid execution, and independent numerical validation. The grant turns these proven patterns into reusable R-centered infrastructure: a language-neutral contract, cross-runtime artifact normalization, structured-result validation, reproducibility evidence, R-facing workflows, and community benchmark cases.
+Over four months, the project will deliver an open-source `equivR` core under MPL-2.0, including equivalence contracts, deterministic dataset and analytical-result validation, structured diagnostics, a model-independent repair loop, R-friendly local/CI workflows, and reproducibility evidence.
+
+The goal is not to build another universal translator. It is to make analytical modernization verifiable: code may evolve, models may change, and runtimes may differ, while acceptance remains tied to trusted analytical results.
 
 # Signatories
 
