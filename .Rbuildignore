@@ -11,3 +11,4 @@
 ^\.claude$
 ^equivR\.Rcheck$
 ^equivR_.*\.tar\.gz$
+^\.gitattributes$
