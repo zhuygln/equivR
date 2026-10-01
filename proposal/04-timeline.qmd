@@ -8,6 +8,10 @@ The project will run for four months. We will build the deterministic validation
 
 By the end of Month 1, `equivR` should accept a reference artifact, an R candidate result, and an equivalence contract, then return deterministic PASS/FAIL status with structured diagnostics.
 
+```{=latex}
+\newpage
+```
+
 ## Technical delivery
 
 | Milestone | Timing | Deliverable | Amount |

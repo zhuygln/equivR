@@ -16,7 +16,7 @@ The project separates code generation from acceptance. An LLM may propose a refa
 
 @fig-equivr-overview summarizes the workflow.
 
-![`equivR` modernization and validation workflow. An LLM (or developer) proposes a candidate implementation, which is executed and normalized alongside trusted reference artifacts. The deterministic core applies the equivalence contract and accepts the candidate only when all required checks pass; otherwise it returns structured diagnostics for repair and re-validation.](figures/equivR_graphviz_swimlane_v2.pdf){#fig-equivr-overview width=100% fig-pos="htb"}
+![`equivR` modernization and validation workflow. An LLM (or developer) proposes a candidate implementation, which is executed and normalized alongside trusted reference artifacts. The deterministic core applies the equivalence contract and accepts the candidate only when all required checks pass; otherwise it returns structured diagnostics for repair and re-validation.](figures/equivR-workflow.pdf){#fig-equivr-overview width=100% fig-pos="htb"}
 
 ### Minimum Viable Product
 

@@ -12,12 +12,14 @@ author:
     affiliations:
       - "Independent open-source project"
 
-date: today
-date-format: iso
 format:
   html:
     embed-resources: true
   hikmah-pdf:
+    include-in-header:
+      text: |
+        \setlength{\droptitle}{-3em}
+        \pretitle{\par\begin{flushleft}\LARGE\sffamily\bfseries}
     geometry:
       - left=1.25in
       - right=1.25in
