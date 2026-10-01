@@ -1,0 +1,19 @@
+---
+bibliography: references.bib
+---
+
+# The Problem
+
+When analytical software is modernized across runtimes - for example, legacy R to modern R, SAS to R, Python to R, or an existing R workflow to an AI-assisted rewrite - producing code that runs is not enough. The harder question is whether the new implementation preserves the analytical behavior that matters.
+
+This affects R developers and analytical teams modernizing validated workflows, maintainers replacing legacy implementations or packages, and teams adopting cross-language or AI-assisted coding where independent evidence of analytical equivalence is needed.
+
+Today this decision is often encoded in one-off scripts. Keys, missing-value rules, ignored metadata, numerical tolerances, required estimates, confidence intervals, and other acceptance criteria are scattered across tests rather than represented as a reusable contract.
+
+AI makes this problem more urgent. An LLM can produce plausible code that is subtly wrong. Asking the same model to review its own output, or generating several variants and choosing the most convincing one, does not provide independent evidence.
+
+`equivR` separates **candidate generation from acceptance**. The source and candidate may be written in different languages; the implementation language is intentionally outside the trust model. Acceptance is based on observed reference/candidate artifacts and an explicit equivalence contract. Every required condition must pass; otherwise the candidate is rejected and structured diagnostics identify what needs repair.
+
+The R Consortium Submissions Working Group already demonstrates the practical value of reference-based validation. Pilot 5 compares R-generated ADaM datasets with prior reference datasets and runs those checks in GitHub Actions [@pilot5]. Recent Working Group discussion emphasizes reproducibility, environment setup, and evidence supporting reviewability [@reviewable2026], while its 2026 plans expand R programs and AI/automation work [@submissions2026].
+
+Object- and data-frame comparison tools address parts of this workflow, but projects still need to assemble their own higher-level acceptance logic around declared criteria, cross-runtime normalization, analytical results, provenance, CI gating, diagnostics, and re-validation. `equivR` targets that reusable layer for the R community.

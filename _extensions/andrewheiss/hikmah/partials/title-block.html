@@ -1,0 +1,11 @@
+$if(title)$
+<header id="title-block-header">
+<h1 class="title">$title$</h1>
+$if(subtitle)$<p class="subtitle lead">$subtitle$</p>$endif$
+$if(by-author)$
+<p class="author">
+$for(by-author)$$it.name.literal$$sep$, $endfor$
+</p>
+$endif$
+</header>
+$endif$

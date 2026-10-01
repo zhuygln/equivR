@@ -1,0 +1,56 @@
+# Project plan
+
+## Start-up phase
+
+**Month 1.** Finalize governance, the **MIT software license**, contribution guidance, GitHub issue/CI reporting, the language-neutral contract schema, validation-result model, and the boundary between the core and runtime adapters. A minimal proof of concept already demonstrates exact-match, within-tolerance, mismatch, and structural-failure cases.
+
+## Technical delivery
+
+### Milestone 1 - Contract and dataset validation (Month 1-2) - $1,250
+
+Implement the equivalence-contract schema, keyed matching, schema/missingness checks, exact categorical comparison, tolerance-aware numeric comparison, and structured diagnostics.
+
+**Outcome:** public fixtures demonstrate both passing and failing cases under a declared contract.
+
+### Milestone 2 - Cross-runtime normalization and structured results (Month 2) - $1,000
+
+Add artifact normalization/adapters and comparison of named results such as estimates, confidence intervals, counts, and p-values.
+
+**Outcome:** one cross-runtime example validates pregenerated reference artifacts against an R candidate without requiring a proprietary runtime in CI.
+
+### Milestone 3 - R-facing workflow and benchmark suite (Month 2-3) - $1,000
+
+Provide an R-friendly CLI or thin wrapper plus reference CI workflow. Implement the initial benchmark suite with a legacy-R -> modern-R case and a cross-runtime -> R case.
+
+**Outcome:** both benchmark cases run from a clean checkout, and the repository documents how new benchmark cases are contributed.
+
+### Milestone 4 - Evidence and closed-loop validation (Month 3-4) - $750
+
+Capture R/Python session metadata, source revision when available, and artifact checksums; provide machine-readable results and a bounded failed-to-repaired candidate example.
+
+**Outcome:** a clean checkout produces deterministic validation evidence, and one candidate is accepted only after all required contract checks pass.
+
+### Milestone 5 - Documentation and release (Month 4) - $1,000
+
+Complete user documentation, architecture/contribution guidance, benchmark documentation, examples, and release hardening.
+
+**Outcome:** publish an initial tagged release with reproducible R-centered examples.
+
+## Other aspects
+
+Development will be public at <https://github.com/zhuygln/equivR> under the **MIT License**. The repository will include a documented format for **community benchmark cases**, inviting users to contribute small, openly licensed analytical code bases and reference/candidate pairs that exercise real R migration and modernization scenarios.
+
+We will publish an initial project announcement and a completion/update post suitable for R Consortium and community channels, and use GitHub issues and discussions to collect implementation and benchmark feedback.
+
+## Budget & funding plan
+
+| Milestone | Amount |
+|---|---:|
+| Contract and dataset validation | $1,250 |
+| Cross-runtime normalization and structured results | $1,000 |
+| R-facing workflow and benchmark suite | $1,000 |
+| Evidence and closed-loop validation | $750 |
+| Documentation and release | $1,000 |
+| **Total** | **$5,000** |
+
+No grant funds are requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
