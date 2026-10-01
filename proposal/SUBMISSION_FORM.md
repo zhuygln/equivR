@@ -18,5 +18,5 @@ Use this as a copy/paste checklist for the R Consortium form.
 
 Before submission, confirm:
 
-- the uploaded PDF is the latest render (the date under the title is the render date);
+- the uploaded PDF is the latest render (the date above the title is the render date);
 - the public repository's `main` branch shows the proposal source, prototype, workflow figure, and MPL-2.0 `LICENSE`.
