@@ -168,35 +168,55 @@ Any proprietary model API costs used during development or evaluation will be se
 
 # Project plan
 
+The project will run for four months. We will build the deterministic validation core first, demonstrate it on SAS -> R, then apply the same workflow to legacy R -> modern R, and finish with the LLM repair loop, documentation, and release.
+
 ## Start-up phase
 
-**Month 1.** Finalize governance, **MPL-2.0 license**, contribution guidance, CI/reporting, the contract schema, validation-result model, and core/adapter boundary. The existing proof of concept already demonstrates exact-match, within-tolerance, mismatch, and structural-failure cases.
+**Month 1.** Finalize project governance and MPL-2.0 licensing, define the first equivalence-contract format, and implement the initial deterministic validator for keys, schema, missing values, categorical values, numerical tolerances, and selected analytical results.
+
+In parallel, prepare the first SAS -> R benchmark and pregenerate trusted SAS reference artifacts so public CI does not require a SAS runtime.
+
+By the end of Month 1, `equivR` should accept a reference artifact, an R candidate result, and an equivalence contract, then return deterministic PASS/FAIL status with structured diagnostics.
 
 ## Technical delivery
 
-**M1 - Contract and dataset validation (Month 1-2) - $1,250.** Implement keyed matching, schema/missingness checks, exact categorical and tolerance-aware numeric comparison, and structured diagnostics; public fixtures show pass/fail behavior.
+**M1 - Equivalence contract and deterministic validation** (Month 1-2 — $1,250). Implement the reusable contract, dataset/result comparison, structured diagnostics, and tests. Any failed required check must block acceptance.
 
-**M2 - Cross-runtime normalization and structured results (Month 2) - $1,000.** Add artifact adapters and comparison of named results; one example validates pregenerated cross-runtime artifacts against an R candidate without a proprietary runtime in CI.
+**M2 - SAS -> R modernization demonstration** (Month 1-2 — $1,000). Use pregenerated SAS outputs as the trusted reference. An LLM produces or repairs an R implementation; `equivR` executes, normalizes, and validates the R outputs against the SAS reference. If the LLM cannot complete the transformation automatically, the candidate may be manually repaired. The validator remains the core deliverable.
 
-**M3 - R-facing workflow and benchmark suite (Month 2-3) - $1,000.** Provide an R-friendly CLI/thin wrapper and reference CI workflow; both initial benchmark cases run from a clean checkout with a documented contribution path.
+**M3 - Legacy R -> modern R and R-facing workflow** (Month 2-3 — $1,000). Apply the same workflow to a legacy R refactoring case. Add an R-friendly command or thin wrapper, a reference CI workflow, and a documented format for future benchmark contributions. This demonstrates that the approach generalizes beyond SAS migration to long-term maintenance of R code.
 
-**M4 - Evidence and closed-loop validation (Month 3-4) - $750.** Capture R/Python session metadata, source revision, checksums, and machine-readable results; demonstrate a failed candidate repaired and accepted only after all required contract checks pass.
+**M4 - Model-independent repair loop and reproducibility evidence** (Month 3-4 — $750). Connect failed validation diagnostics to a bounded LLM repair loop:
 
-**M5 - Documentation and release (Month 4) - $1,000.** Complete user/architecture/contribution documentation, benchmark examples, and release hardening; publish an initial tagged release.
+```
+generate/repair -> execute -> validate
+                  PASS -> accept
+                  FAIL -> diagnose -> repair again
+```
+
+The LLM interface will be model/provider independent. Validation remains deterministic and is the only authority for acceptance. Record validation results, contract version, checksums, runtime/session information, source revision, and model metadata when an LLM is used.
+
+**M5 - Documentation and release** (Month 4 — $1,000). Complete user and architecture documentation, SAS -> R and legacy R -> modern R examples, benchmark contribution guidance, tests, CI, and an initial tagged release.
+
+**Failure recovery.** If an LLM cannot produce a correct candidate, we narrow or manually repair the example while preserving the validation experiment. Unsupported SAS/R behavior will be documented rather than treated as verified. Model-provider failure will not affect deterministic CI, and the repair loop will stop after a bounded number of attempts.
 
 ## Other aspects
 
-Development is public at <https://github.com/zhuygln/equivR>; the open-source `equivR` core will be released under the **Mozilla Public License 2.0 (MPL-2.0)**, with a documented community benchmark format and feedback through GitHub issues/discussions. We will publish project announcement and completion/update material suitable for R Consortium/community channels.
+Development will be public under MPL-2.0, with community feedback and benchmark contributions through the repository.
+
+Phase 1 remains intentionally narrow: two small benchmark cases, artifact-based validation, and no requirement for live SAS in CI. Future cases can extend the same framework to additional SAS -> R, Python -> R, package-migration, and other analytical modernization workflows.
+
+No licensed SAS software, proprietary LLM subscription, cloud service, or AI credit will be charged to the grant.
 
 ## Budget & funding plan
 
 | Milestone | Amount |
 |---|---:|
-| Contract and dataset validation | $1,250 |
-| Cross-runtime normalization and structured results | $1,000 |
-| R-facing workflow and benchmark suite | $1,000 |
-| Evidence and closed-loop validation | $750 |
-| Documentation and release | $1,000 |
+| M1 - Equivalence contract and deterministic validation | $1,250 |
+| M2 - SAS -> R modernization demonstration | $1,000 |
+| M3 - Legacy R -> modern R and R-facing workflow | $1,000 |
+| M4 - Model-independent repair loop and reproducibility evidence | $750 |
+| M5 - Documentation and release | $1,000 |
 | **Total** | **$5,000** |
 
 No grant funds are requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
