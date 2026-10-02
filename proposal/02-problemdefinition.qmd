@@ -4,7 +4,7 @@ bibliography: references.bib
 
 # The Problem
 
-Recent R Consortium discussion on making R submissions reviewable for FDA highlights a practical challenge: reviewers may receive R code but still struggle to recreate the sponsor's environment, install dependencies, or reproduce submitted results [@reviewable2026]. As R becomes a more important open-source option for clinical-trial analysis, reviewability and reproducibility matter as much as whether the code runs.
+Recent R Consortium discussion on making R submissions reviewable for the U.S. Food and Drug Administration (FDA) highlights a practical challenge: reviewers may receive R code but still struggle to recreate the sponsor's environment, install dependencies, or reproduce submitted results [@reviewable2026]. As R becomes a more important open-source option for clinical-trial analysis, reviewability and reproducibility matter as much as whether the code runs.
 
 The R Submissions Working Group is addressing this through approaches such as containers and WebAssembly, while also planning greater use of AI and automation in future submission pipelines [@submissions2026].
 

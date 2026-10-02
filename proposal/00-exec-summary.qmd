@@ -6,4 +6,4 @@ R is becoming an important open-source option for clinical-trial analysis and re
 
 > **Generation proposes; validation decides.**
 
-Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted SAS reference artifacts, then apply the same workflow to legacy R -> modern R. Over four months, the project will deliver an open-source `equivR` core under MPL-2.0 with deterministic equivalence validation, structured diagnostics, a model-independent LLM repair loop, R-friendly local/CI workflows, and reproducibility evidence.
+Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted SAS reference artifacts, then apply the same workflow to legacy R -> modern R. Over four months, the project will deliver an open-source `equivR` core under MPL-2.0 with deterministic equivalence validation, structured diagnostics, a model-independent large language model (LLM) repair loop, R-friendly local/continuous integration (CI) workflows, and reproducibility evidence.

@@ -10,13 +10,13 @@ R is becoming an important open-source option for clinical-trial analysis and re
 
 > **Generation proposes; validation decides.**
 
-Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted SAS reference artifacts, then apply the same workflow to legacy R -> modern R. Over four months, the project will deliver an open-source `equivR` core under MPL-2.0 with deterministic equivalence validation, structured diagnostics, a model-independent LLM repair loop, R-friendly local/CI workflows, and reproducibility evidence.
+Phase 1 will first demonstrate SAS -> R modernization using pregenerated trusted SAS reference artifacts, then apply the same workflow to legacy R -> modern R. Over four months, the project will deliver an open-source `equivR` core under MPL-2.0 with deterministic equivalence validation, structured diagnostics, a model-independent large language model (LLM) repair loop, R-friendly local/continuous integration (CI) workflows, and reproducibility evidence.
 
 # Signatories
 
 ## Project team
 
-**Yonglin Zhu** — co-PI / co-lead. Led a completed SAS-to-Python modernization framework combining AI-assisted transformation with numerical-equivalence validation. Leads architecture, contract design, and the validator.
+**Yonglin Zhu** — co-principal investigator (co-PI) / co-lead. Led a completed SAS-to-Python modernization framework combining artificial intelligence (AI)-assisted transformation with numerical-equivalence validation. Leads architecture, contract design, and the validator.
 
 **Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at Thermo Fisher Scientific Inc., working across SAS and R analytics. Leads use-case design, benchmarks, testing, and documentation.
 
@@ -32,7 +32,7 @@ The design is informed by public R Consortium Submissions Working Group material
 
 # The Problem
 
-Recent R Consortium discussion on making R submissions reviewable for FDA highlights a practical challenge: reviewers may receive R code but still struggle to recreate the sponsor's environment, install dependencies, or reproduce submitted results [@reviewable2026]. As R becomes a more important open-source option for clinical-trial analysis, reviewability and reproducibility matter as much as whether the code runs.
+Recent R Consortium discussion on making R submissions reviewable for the U.S. Food and Drug Administration (FDA) highlights a practical challenge: reviewers may receive R code but still struggle to recreate the sponsor's environment, install dependencies, or reproduce submitted results [@reviewable2026]. As R becomes a more important open-source option for clinical-trial analysis, reviewability and reproducibility matter as much as whether the code runs.
 
 The R Submissions Working Group is addressing this through approaches such as containers and WebAssembly, while also planning greater use of AI and automation in future submission pipelines [@submissions2026].
 
@@ -48,11 +48,11 @@ Large language models make modernization easier, but they cannot be trusted to v
 
 ## Overview
 
-`equivR` will let teams modernize analytical code while keeping the trusted implementation as the authority for what must not change.
+`equivR` will help teams modernize analytical code while using trusted reference results to verify that the modernization preserves the intended analytical behavior.
 
 The first target is SAS -> R. A trusted SAS workflow provides reference artifacts; an LLM produces or repairs an R implementation; `equivR` validates the R outputs against the SAS reference and returns structured diagnostics on failure. A candidate is accepted only when all declared checks pass. The same framework is then applied to legacy R -> modern R.
 
-For the R community, this offers a second path to long-term reviewability: instead of preserving an old runtime indefinitely, a workflow can be modernized with verifiable evidence that its analytical behavior is unchanged.
+For the R community, `equivR` offers a second path to long-term reviewability: instead of preserving an old runtime indefinitely, a workflow can be modernized with verifiable evidence that its analytical results are unchanged.
 
 ## Detail
 
@@ -66,19 +66,24 @@ The Phase 1 MVP will let a user:
 
 1. provide trusted reference artifacts and an R candidate;
 2. define an equivalence contract (keys, schema, missingness, categorical values, numerical tolerances, selected analytical results);
-3. run deterministic validation locally or in CI, with PASS/FAIL status and structured diagnostics; and
+3. run deterministic validation locally or in CI, with PASS/FAIL status and structured diagnostics;
 4. feed failures into a bounded LLM repair and re-validation loop.
 
-Two public examples will be delivered: SAS -> R, using pregenerated SAS reference artifacts; and legacy R -> modern R, using the same framework.
+Two public examples will be delivered:
+
+- SAS -> R, using pregenerated SAS reference artifacts;
+- legacy R -> modern R, using the same framework.
 
 ### Architecture
+
+A thin R-friendly command or wrapper exposes the workflow without requiring users to touch orchestration internals.
+
+Phase 1 has four components:
 
 1. **LLM modernization interface** — model-independent generation and repair.
 2. **Equivalence contract** — machine-readable definition of the behavior to preserve.
 3. **Runtime/artifact layer** — executes the R candidate and normalizes candidate and reference outputs.
 4. **Deterministic validator and evidence** — applies the contract, blocks acceptance on any required failure, and emits diagnostics and reproducibility evidence.
-
-A thin R-friendly command or wrapper exposes the workflow without requiring users to touch orchestration internals.
 
 ### Assumptions
 
@@ -90,7 +95,7 @@ If an LLM cannot complete a transformation, `equivR` can still validate a human-
 
 ### External dependencies
 
-The project uses open-source R/Python libraries, standard CI tooling, and access to a general-purpose LLM, without depending on a particular vendor or model family. SAS is needed only to pregenerate the trusted reference artifacts; public CI will not require licensed SAS software. Proprietary model API costs will be self-funded or provided in kind.
+The project uses open-source R/Python libraries, standard CI tooling, and access to a general-purpose LLM, without depending on a particular vendor or model family. SAS is needed only to pregenerate the trusted reference artifacts; public CI will not require licensed SAS software. Proprietary model application programming interface (API) costs will be self-funded or provided in kind.
 
 # Project plan
 
