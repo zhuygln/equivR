@@ -2,33 +2,26 @@
 
 ## Start-up phase
 
-**Month 1.** Finalize governance, **MIT license**, contribution guidance, CI/reporting, the contract schema, validation-result model, and core/adapter boundary. The existing proof of concept already demonstrates exact-match, within-tolerance, mismatch, and structural-failure cases.
+**Month 1.** Finalize governance and MPL-2.0 licensing, define the first equivalence-contract format, implement the initial deterministic validator, and prepare the SAS -> R benchmark with pregenerated reference artifacts. By the end of Month 1, `equivR` should take a reference artifact, an R candidate result, and a contract, and return deterministic PASS/FAIL status with structured diagnostics.
 
 ## Technical delivery
 
-**M1 - Contract and dataset validation (Month 1-2) - $1,250.** Implement keyed matching, schema/missingness checks, exact categorical and tolerance-aware numeric comparison, and structured diagnostics; public fixtures show pass/fail behavior.
+| Milestone | Timing | Deliverable | Amount |
+|----|------|------------------------------|-----:|
+| M1 | Month 1-2 | Equivalence contract, deterministic validation, diagnostics, tests | $1,250 |
+| M2 | Month 1-2 | SAS -> R modernization demonstration | $1,000 |
+| M3 | Month 2-3 | Legacy R -> modern R, R-friendly invocation, CI, benchmark format | $1,000 |
+| M4 | Month 3-4 | Model-independent bounded LLM repair loop and reproducibility evidence | $750 |
+| M5 | Month 4 | Documentation, examples, release hardening, tagged release | $1,000 |
 
-**M2 - Cross-runtime normalization and structured results (Month 2) - $1,000.** Add artifact adapters and comparison of named results; one example validates pregenerated cross-runtime artifacts against an R candidate without a proprietary runtime in CI.
-
-**M3 - R-facing workflow and benchmark suite (Month 2-3) - $1,000.** Provide an R-friendly CLI/thin wrapper and reference CI workflow; both initial benchmark cases run from a clean checkout with a documented contribution path.
-
-**M4 - Evidence and closed-loop validation (Month 3-4) - $750.** Capture R/Python session metadata, source revision, checksums, and machine-readable results; demonstrate a failed candidate repaired and accepted only after all required contract checks pass.
-
-**M5 - Documentation and release (Month 4) - $1,000.** Complete user/architecture/contribution documentation, benchmark examples, and release hardening; publish an initial tagged release.
+**Failure recovery.** If an LLM cannot produce a correct candidate, we will narrow or manually repair the example while preserving the validation experiment. Unsupported SAS/R behavior will be documented as out of scope. Model-provider failure will not affect deterministic CI, and the repair loop stops after a bounded number of attempts.
 
 ## Other aspects
 
-Development is public at <https://github.com/zhuygln/equivR> under the **MIT License**, with a documented community benchmark format and feedback through GitHub issues/discussions. We will publish project announcement and completion/update material suitable for R Consortium/community channels.
+Development will be public under MPL-2.0, with feedback and benchmark contributions through the repository. Phase 1 stays narrow: two small benchmark cases, artifact-based validation, and no live SAS in CI.
 
 ## Budget & funding plan
 
-| Milestone | Amount |
-|---|---:|
-| Contract and dataset validation | $1,250 |
-| Cross-runtime normalization and structured results | $1,000 |
-| R-facing workflow and benchmark suite | $1,000 |
-| Evidence and closed-loop validation | $750 |
-| Documentation and release | $1,000 |
-| **Total** | **$5,000** |
+**Total requested: $5,000.** Milestone amounts are shown above.
 
 No grant funds are requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.

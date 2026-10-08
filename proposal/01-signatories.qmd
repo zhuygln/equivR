@@ -2,12 +2,24 @@
 
 ## Project team
 
-**Yonglin Zhu** - co-PI / co-lead; Senior Staff Scientist at SAS Institute. ORCID [0000-0003-0245-827X](https://orcid.org/0000-0003-0245-827X); <zhuygln@gmail.com>. Led development of a completed SAS-to-Python modernization framework using AI-assisted transformation, hybrid SAS/Python execution, and numerical-equivalence validation. Leads architecture, equivalence-contract design, and validation workflow implementation. Project: <https://github.com/zhuygln/equivR>.
+```{=latex}
+\begingroup\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+```
 
-We request **$5,000 over four months** for project labor. No funds are requested for cloud services or AI credits.
+**Yonglin Zhu** — co-principal investigator (co-PI) / co-lead. Led a completed SAS-to-Python modernization framework combining artificial intelligence (AI)-assisted transformation with numerical-equivalence validation. Leads architecture, contract design, and the validator.
 
-**Xing Cai** - co-PI / co-lead; founding member of the R Working Group at PPD. ORCID [0009-0004-5983-3338](https://orcid.org/0009-0004-5983-3338); <caixingtt@gmail.com>. Applied analytics experience with SAS, R, Python, statistical modeling, and data-science workflows; co-leads R-community use-case design, benchmark development, testing, documentation, and applied evaluation.
+**Xing Cai** — co-PI / co-lead. Founding member of the R Working Group at Thermo Fisher Scientific Inc., working across SAS and R analytics. Leads use-case design, benchmarks, testing, and documentation.
 
-`equivR` is independent open-source work: it is not sponsored, funded, or endorsed by either co-PI's employer and does not depend on employer-owned code, data, or infrastructure.
+`equivR` is independent open-source work, not sponsored, funded, or endorsed by either co-PI's employer, and does not use employer-owned code, data, or infrastructure.
 
-**Contributors / consulted.** None at submission time; community contributions will be invited through the public repository and benchmark process. The design is informed by public R Consortium Submissions Working Group materials [@pilot5; @submissions2026; @reviewable2026]; citation does not imply endorsement.
+```{=latex}
+\endgroup
+```
+
+## Contributors
+
+The co-PIs have already prepared this proposal and a public prototype at <https://github.com/zhuygln/equivR>: a base-R proof of concept with worked examples, a Phase 1 implementation plan, and early contract-v1 validation code with tests and CI. Community contributions will be invited through the repository.
+
+## Consulted
+
+The design is informed by public R Consortium Submissions Working Group materials [@reviewable2026; @submissions2026; @pilot5]; citation does not imply endorsement.
