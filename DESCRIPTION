@@ -12,7 +12,7 @@ Description: Validates whether a candidate analytical implementation reproduces
     equivalence contract. Acceptance is deterministic and fail-closed: a
     candidate passes only when every required check passes, and every
     result carries machine-readable diagnostics and artifact checksums.
-License: MIT + file LICENSE
+License: MPL-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.1.0)
