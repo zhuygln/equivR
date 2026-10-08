@@ -1,0 +1,9 @@
+version: equivr-contract/v1
+name: missingness_mismatch
+reference: reference.csv
+candidate: candidate.csv
+keys: [id]
+tolerance:
+  abs: 1.0e-8
+  rel: 0.0
+

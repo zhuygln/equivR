@@ -2,11 +2,23 @@
 
 ## 1. Objective
 
-Implement the Phase 1 `equivR` system described in the ISC proposal as a four-month, cross-runtime validation toolkit for R modernization.
+Implement the Phase 1 `equivR` system described in the ISC proposal (`proposal/03-proposal.qmd`, `proposal/04-timeline.qmd`): a four-month, $5,000 project that modernizes analytical code while independently verifying that its analytical behavior is preserved. The proposal is the authoritative reference for milestones, timing, and budget; this plan describes how to execute it.
 
-The system must support a trust model in which candidate generation may be performed by a developer, translator, or LLM, while acceptance is decided only by deterministic validation against a trusted reference and an explicit equivalence contract.
+Phase 1 delivers two demonstrations, in this order:
 
-Phase 1 is deliberately artifact-based. It does **not** build a general SAS-to-R/Python-to-R translator, a live SAS runtime integration, regulatory certification, or a proof of universal program equivalence.
+1. **SAS -> R**: an R candidate, generated or repaired with an LLM, is validated against pregenerated trusted SAS reference artifacts.
+2. **Legacy R -> modern R**: the same framework is applied to refactoring an existing R analysis.
+
+### Invariants
+
+These hold in every milestone and every pull request:
+
+- Deterministic validation is independent of LLM-generated code; the validator never imports, executes, or trusts candidate code paths.
+- Only the deterministic validator can accept a candidate. An LLM response can never set validation status.
+- All declared required checks must pass; any failed, skipped, or erroring required check gives overall FAIL.
+- No live SAS runtime is required in public CI; SAS is used offline only to pregenerate reference artifacts.
+- Phase 1 is not a general-purpose SAS-to-R translator, a live SAS integration, or regulatory certification.
+- No claim of mathematical or program equivalence is made beyond the checks declared in the contract.
 
 ## 2. Recommended implementation architecture
 
@@ -20,7 +32,7 @@ The proposal allows the deterministic validation core to be implemented in R and
 | R-facing workflow | R functions + thin CLI | Local invocation, CI invocation, configuration, report access |
 | Evidence layer | Shared structured format | Machine-readable result plus human-readable report, provenance, checksums |
 | LLM orchestration | Python | Model-provider abstraction, repair prompting, bounded generate/repair/revalidate loop |
-| Benchmark suite | Language-neutral fixtures | Legacy R -> modern R and cross-runtime reference -> R, plus future community cases |
+| Benchmark suite | Language-neutral fixtures | SAS -> R (pregenerated SAS artifacts) and legacy R -> modern R, plus future community cases |
 
 The important trust boundary is that the LLM orchestration layer can propose code or repairs but can never mark a candidate as accepted. Only the deterministic validator can do that.
 
@@ -100,8 +112,8 @@ equivR/
 │   ├── contract-v1.schema.json
 │   └── result-v1.schema.json
 ├── benchmarks/
-│   ├── legacy-r-to-modern-r/
-│   └── cross-runtime-to-r/
+│   ├── sas-to-r/
+│   └── legacy-r-to-modern-r/
 ├── examples/
 ├── tests/
 │   ├── unit/
@@ -119,34 +131,44 @@ The exact file names can change, but keeping validation, LLM orchestration, sche
 
 ## 5. Four-month implementation schedule
 
-| Week | Work | Concrete output | Acceptance gate |
-|---|---|---|---|
-| 1 | Freeze Phase 1 scope and contract semantics | Contract v1 draft; canonical artifact/result schemas; check taxonomy | Two hand-written contracts can represent the two planned benchmark classes |
-| 2 | Implement key/schema validation | Key alignment, duplicate-key detection, required/extra field checks, missingness rules | Golden PASS/FAIL fixtures behave deterministically |
-| 3 | Implement value comparison | Exact categorical and abs/rel numeric tolerance logic | Boundary/tolerance tests pass |
-| 4 | Diagnostics and result object | Structured mismatch objects and fail-closed aggregation | Any required failure produces overall FAIL with actionable diagnostics |
-| 5 | Artifact normalization | R dataset/result adapters; canonical artifact representation | Same logical artifact normalizes reproducibly |
-| 6 | Structured analytical-result validation | Estimates, CIs, counts, p-values | Named result fixtures validate independently and with datasets |
-| 7 | Cross-runtime reference handling | Pregenerated SAS/Python-style reference artifacts; import adapters | No proprietary runtime required in CI |
-| 8 | R-facing invocation | Thin R interface/CLI and reference CI workflow | Validation runs from a clean checkout with one command |
-| 9 | Benchmark 1 | Legacy R -> modern R case | Benchmark runs cleanly and detects seeded regressions |
-| 10 | Benchmark 2 + contribution format | Cross-runtime reference -> R case; benchmark specification | Both initial cases run from a clean checkout |
-| 11 | Model-independent LLM interface | Provider-neutral model client and configuration | Swap between at least two representative model backends without validator changes |
-| 12 | Closed-loop repair workflow | Generate/revise -> execute -> validate -> diagnose -> repair -> revalidate | A known failing candidate is repaired and accepted only after all required checks pass |
-| 13 | Evidence/provenance | Checksums, R/Python session metadata, revision metadata, machine-readable evidence | Repeated deterministic runs produce equivalent validation results |
-| 14 | Hardening | Error taxonomy, edge cases, retry/termination rules, CI expansion | No silent acceptance paths; failures are typed |
-| 15 | Documentation/release candidate | User guide, architecture guide, benchmark contribution guide | New user can run both benchmarks from docs alone |
-| 16 | Final verification and release | Tagged Phase 1 release; final CI; project update material | All proposal success criteria satisfied |
+The schedule follows the proposal's milestone timing (M1 and M2 in Months 1-2, M3 in Months 2-3, M4 in Months 3-4, M5 in Month 4). Workstreams overlap where the proposal's timing requires it. Week numbers are relative to project start; status reflects the repository as of PR #1.
+
+| Weeks | Milestone | Work | Concrete output | Acceptance gate | Status |
+|---|---|---|---|---|---|
+| 1-4 | M1 | Contract v1; key, schema, missingness, and value checks; fail-closed result object; golden tests; CI | `R/contract.R`, `R/compare_dataset.R`, `R/result.R`, schemas, nine golden cases, R-CMD-check on four platforms | Any required failure gives FAIL with actionable diagnostics; golden evidence is byte-stable | Done (PR #1) |
+| 2-4 (parallel) | M2 prep | Choose a small public SAS workflow; run it offline to pregenerate reference datasets and selected results with provenance | `benchmarks/sas-to-r/reference/` plus a note on how the artifacts were generated | Artifacts committed; nothing downstream needs SAS | Not started |
+| 5-6 | M1 close-out | Merge PR #1; freeze `contract-v1` dataset semantics; tag the M1 release | Tagged M1 release | `main` green; contract changes after this need a version bump | Pending merge |
+| 5-6 | M2 | Artifact normalization for the SAS exports; structured analytical-result comparison (estimates, confidence intervals, counts, p-values) through the contract's reserved `results` section | SAS-export adapter; `R/compare_results.R`; result fixtures | Named-result fixtures pass and fail deterministically, alone and with datasets | Not started |
+| 7-8 | M2 | Produce the R candidate with an LLM (single-pass or manually guided; the automated loop is M4) and validate it against the SAS reference; seed deliberate mismatches | `benchmarks/sas-to-r/` with contract, candidate, expected results | SAS -> R benchmark runs from a clean checkout without SAS; seeded regressions FAIL with diagnostics | Not started |
+| 7-10 | M3 | Legacy R -> modern R benchmark, reusing the M2 adapters and result checks | `benchmarks/legacy-r-to-modern-r/` | Equivalent refactor PASSes; seeded analytical changes FAIL | Not started |
+| 9-11 | M3 | R-friendly invocation (`equiv_run()` plus a thin command-line wrapper); reference CI workflow; benchmark contribution format | `R/cli.R`, CI workflow, `docs/benchmark-format.md` | Both benchmarks run locally and in CI with one command | Not started |
+| 10-12 | M4 | Model-independent provider interface; bounded generate -> execute -> validate -> diagnose -> repair loop | `python/equivr_agent/` (or R equivalent) | A known failing candidate is accepted only after all required checks pass; the loop stops at its iteration limit | Not started |
+| 12-14 | M4 | Reproducibility evidence: contract version, checksums, R/Python session information, source revision, model/provider metadata; replayed repair trace for credential-free CI | Evidence schema extension; recorded trace | Repeated runs give equivalent evidence; CI never calls a paid API | Not started |
+| 14-16 | M5 | User, architecture, and contribution docs; examples; release hardening | Docs, examples, tagged Phase 1 release | All proposal success criteria met | Not started |
+
+### Dependencies
+
+- M2 builds on the merged M1 validator; SAS artifact preparation can start before the merge because it only produces data.
+- M3 reuses the M2 artifact adapters and structured-result checks rather than building its own.
+- M4 needs both benchmarks, because the repair loop is demonstrated on them.
+- M5 documents and releases what M1-M4 deliver; no new features start in M5.
+
+### Failure recovery
+
+Mirrors the proposal: if an LLM cannot produce a correct candidate, narrow or manually repair the example while preserving the validation experiment; document unsupported SAS/R behavior as out of scope; model-provider failure must not affect deterministic CI; the repair loop stops after a bounded number of attempts.
 
 ## 6. Milestone mapping to the ISC proposal
 
-| Proposal milestone | Weeks | Implementation deliverable | Budget |
-|---|---:|---|---:|
-| M1 Contract and dataset validation | 1-4 | Contract v1, dataset comparison, diagnostics, fixtures | $1,250 |
-| M2 Cross-runtime normalization and structured results | 5-7 | Artifact adapters, canonical representation, named-result validation | $1,000 |
-| M3 R-facing workflow and benchmark suite | 8-10 | R invocation, CI workflow, two benchmark cases, contribution format | $1,000 |
-| M4 Evidence and closed-loop validation | 11-14 | Model-independent LLM interface, repair loop, provenance/evidence | $750 |
-| M5 Documentation and release | 15-16 | Docs, release hardening, tagged release | $1,000 |
+Milestone names, timing, and amounts match `proposal/04-timeline.qmd`. Artifact normalization and structured analytical-result comparison are technical requirements, not separate proposal milestones; they are delivered under the milestones that need them.
+
+| Proposal milestone | Timing | Weeks | Deliverable | Supporting technical requirements | Budget |
+|---|---|---:|---|---|---:|
+| M1 Equivalence contract and deterministic validation | Month 1-2 | 1-6 | Contract v1, deterministic dataset validation, structured diagnostics, tests | Dataset normalization (CSV/RDS/data frame), checksums, fail-closed result | $1,250 |
+| M2 SAS -> R modernization demonstration | Month 1-2 | 2-8 | SAS -> R benchmark against pregenerated SAS reference artifacts | SAS-export artifact adapter; structured-result comparison (estimates, CIs, counts, p-values) | $1,000 |
+| M3 Legacy R -> modern R, R-friendly invocation, CI, benchmark format | Month 2-3 | 7-11 | Legacy R benchmark; `equiv_run()`/CLI; reference CI workflow; contribution format | Reuses M2 adapters and result checks | $1,000 |
+| M4 Model-independent bounded LLM repair loop and reproducibility evidence | Month 3-4 | 10-14 | Provider-neutral model interface; bounded repair loop; evidence/provenance | Session, revision, and model metadata; replayed trace for CI | $750 |
+| M5 Documentation, examples, release hardening, tagged release | Month 4 | 14-16 | User, architecture, and contribution docs; tagged release | — | $1,000 |
+| **Total** | 4 months | | | | **$5,000** |
 
 ## 7. LLM-dependent, model-independent design
 
@@ -186,12 +208,14 @@ benchmark/
 
 `benchmark.yaml` should state the scenario, source/target runtimes, how artifacts were generated, expected initial status, and any runtime prerequisites.
 
-The two required Phase 1 benchmarks are:
+The two required Phase 1 benchmarks, in delivery order, are:
 
-| Benchmark | Purpose | Required behavior |
-|---|---|---|
-| Legacy R -> modern R | Demonstrate direct value to R maintainers and modernization workflows | Equivalent modernization passes; seeded analytical changes fail |
-| Cross-runtime reference -> R | Demonstrate language-independent trust model | R candidate is judged from pregenerated reference artifacts without the source runtime in CI |
+| Benchmark | Milestone | Purpose | Required behavior |
+|---|---|---|---|
+| SAS -> R | M2 | Primary use case: an LLM-assisted R candidate judged against a trusted SAS workflow | R candidate is validated against pregenerated SAS reference artifacts without SAS in CI; seeded mismatches fail |
+| Legacy R -> modern R | M3 | Show the same framework supports long-term maintenance within R | Equivalent modernization passes; seeded analytical changes fail |
+
+The existing `examples/contracts/cross-runtime-to-r.yaml` becomes the starting point for the SAS -> R contract in M2.
 
 The contribution format should make it straightforward for the community to add future package-replacement, SAS-to-R, Python-to-R, refactoring, and AI-assisted R cases.
 
@@ -243,26 +267,25 @@ The controller should never optimize for "LLM confidence." Progress should be me
 
 ## 12. Definition of done
 
-Phase 1 is complete only when all of the following are true:
+Phase 1 is complete only when all of the following are true (aligned with the proposal's Success section):
 
-- an R user can run `equivR` locally and in CI;
-- both public benchmark cases run from a clean checkout;
-- the deterministic validator returns stable machine-readable and human-readable evidence;
-- every failed required check forces overall failure;
-- one bounded LLM-driven example starts with a failing candidate, uses diagnostics to revise it, and reaches acceptance only after all declared required checks pass;
-- the LLM can be swapped through the model abstraction without changes to validation logic;
-- the community benchmark contribution format is documented;
-- no licensed SAS runtime is needed to run the shipped CI examples; and
-- an initial tagged release is published.
+- the SAS -> R and legacy R -> modern R workflows both run from a clean checkout, locally and in CI;
+- both use explicit equivalence contracts and produce deterministic diagnostics and reproducible validation evidence;
+- every failed required check forces overall FAIL, and seeded mismatches fail with actionable diagnostics;
+- the SAS -> R example validates against pregenerated trusted artifacts, and no live SAS runtime is needed in CI;
+- the repair loop is model/provider independent, bounded, and the LLM never determines acceptance;
+- an R-friendly invocation path, CI example, and benchmark contribution format are documented; and
+- an initial public release is tagged.
 
 ## 13. Immediate next steps
 
-The first implementation sprint should focus only on the deterministic foundation:
+M1's deterministic foundation is in place (PR #1). The next major delivery target is the M2 SAS -> R demonstration, so that a real migration tests whether the contract, artifact adapters, and diagnostics are sufficient for the primary use case before the generic validator grows further.
 
-1. freeze `contract-v1`;
-2. define normalized artifact and validation-result schemas;
-3. split the current proof-of-concept code into contract, normalization, comparison, and evidence modules;
-4. add golden fixtures for exact match, tolerance pass, tolerance fail, duplicate/missing keys, schema mismatch, and missing-value mismatch;
-5. put all deterministic tests in CI before adding any LLM integration.
+1. Merge PR #1 and tag the M1 release; treat `contract-v1` dataset semantics as frozen.
+2. Pick a small, openly licensed SAS workflow and pregenerate its reference datasets and selected results offline, recording how they were produced.
+3. Define the `results` section of the contract for estimates, confidence intervals, counts, and p-values, driven by what the SAS example actually produces.
+4. Add the SAS-export adapter and structured-result comparison with golden fixtures.
+5. Generate the R candidate with an LLM, validate it, and add seeded mismatches; keep all of this deterministic in CI.
 
-This ordering preserves the proposal's core trust model: the validator becomes stable before the model-driven repair layer is attached.
+The automated repair loop (M4) is attached only after both benchmarks validate deterministically, which preserves the core trust model: the validator is stable before any model-driven layer depends on it.
+

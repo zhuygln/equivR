@@ -2,29 +2,24 @@
 
 **Reproducible Cross-Runtime Equivalence for R Analytics**
 
-`equivR` is an independent open-source cross-runtime validation toolkit for R modernization and migration. It validates whether a new analytical implementation reproduces the important data and statistical results of a trusted reference.
+`equivR` is an independent open-source toolkit for modernizing analytical code while independently verifying that its analytical behavior is preserved. It checks whether a candidate implementation reproduces the results of a trusted reference under an explicit, versioned equivalence contract.
 
-R is the community and workflow focus, not a restriction on implementation language. A trusted reference may originate in legacy R, SAS, Python, or another analytical runtime. A candidate may be modern R, a refactor, a package migration, or AI-assisted code. The validation infrastructure may use R and Python internally, but acceptance is based on independently observed artifacts and an explicit equivalence contract.
+R is the community and workflow focus. A trusted reference may come from SAS, legacy R, or another runtime; a candidate may be modern R written by a developer or proposed by a large language model (LLM). Acceptance is based only on observed artifacts and the declared contract.
 
 > **Generation proposes; validation decides.**
 
-A candidate is accepted only when **all required checks in the declared contract pass**. Otherwise `equivR` returns deterministic diagnostics for repair and re-validation.
+A candidate is accepted only when **all required checks in the declared contract pass**; otherwise the result is FAIL with deterministic diagnostics for repair and re-validation. An LLM may generate or repair code, but it never decides acceptance. No claim is made beyond what the contract declares.
 
-## Phase 1 scope
+## Proposed Phase 1
 
-The R Consortium ISC proposal funds a focused first phase:
+The R Consortium ISC 2026-2 proposal in [`proposal/`](proposal/) (not yet awarded) describes a four-month Phase 1:
 
-- a language-neutral equivalence-contract specification;
-- deterministic dataset and structured-result validation;
-- runtime/artifact normalization for R and pregenerated cross-runtime references;
-- an R-friendly CLI or thin wrapper plus CI workflow;
-- reproducibility metadata and machine-/human-readable evidence;
-- an initial benchmark suite with:
-  1. legacy R -> modern R, and
-  2. cross-runtime trusted reference -> R;
-- a documented format for community-contributed benchmark cases.
+1. **SAS -> R** modernization demonstration, validated against pregenerated SAS reference artifacts, so public CI never needs a SAS runtime;
+2. **legacy R -> modern R** demonstration using the same framework;
+3. a model-independent, bounded LLM repair loop driven by validation diagnostics;
+4. an R-friendly local/CI workflow, reproducibility evidence, documentation, and an initial release.
 
-The grant does **not** fund a general SAS-to-R or Python-to-R translator, a coding agent, live SAS integration, regulatory certification, or a proof of universal program equivalence. Those may become future consumers or extensions of the validation layer.
+Phase 1 is not a general-purpose SAS-to-R translator, a live SAS integration, regulatory certification, or a proof of universal program equivalence. See [`doc/equivR_implementation_plan.md`](doc/equivR_implementation_plan.md) for the milestone schedule.
 
 ## Project leads
 
@@ -35,7 +30,7 @@ Both project leads have current employers, but `equivR` is independent open-sour
 
 ## R Consortium ISC proposal
 
-This repository is the project link for our **R Consortium ISC 2026-2** technical grant proposal.
+This repository is the project link for our **R Consortium ISC 2026-2** grant proposal.
 
 All proposal sources live in [`proposal/`](proposal/) and follow the official R Consortium ISC Quarto structure:
 
@@ -46,13 +41,15 @@ All proposal sources live in [`proposal/`](proposal/) and follow the official R 
 - `proposal/03-proposal.qmd`
 - `proposal/04-timeline.qmd`
 - `proposal/05-success.qmd`
-- `proposal/figures/equivR-cross-runtime-overview.png`
+- `proposal/figures/equivR-workflow.pdf` (Figure 1)
 - `proposal/SUBMISSION_FORM.md`
 
-Project code lives at the repo root:
+Project code lives at the repo root as an R package:
 
-- Minimal prototype: [`R/equivR.R`](R/equivR.R)
-- Prototype examples: [`examples/basic_validation.R`](examples/basic_validation.R)
+- Package sources: [`R/`](R/) (contract, normalization, dataset comparison, result/evidence)
+- Contract specification: [`doc/contract.md`](doc/contract.md) and JSON schemas in [`schemas/`](schemas/)
+- Examples: [`examples/basic_validation.R`](examples/basic_validation.R) and [`examples/contracts/`](examples/contracts/)
+- Implementation plan: [`doc/equivR_implementation_plan.md`](doc/equivR_implementation_plan.md)
 
 Render the proposal from inside the `proposal/` directory:
 
@@ -62,21 +59,47 @@ cd proposal && quarto render isc-proposal.qmd
 
 The proposal uses the official [`RConsortium/isc-proposal`](https://github.com/RConsortium/isc-proposal) structure and Hikmah PDF format.
 
-## Initial prototype
+## Install and run
 
-The current base-R proof of concept demonstrates the fail-closed acceptance semantics the full toolkit will preserve:
+`equivR` is in early development. Milestone M1 (equivalence contract and deterministic dataset validation) is implemented: `contract-v1` in YAML/JSON or built in R, CSV/RDS/data-frame datasets, eleven named schema/key/row/value checks, fail-closed aggregation, and JSON evidence with SHA-256 checksums. Structured analytical results (the contract's reserved `results` section), SAS artifact adapters, the R command-line wrapper, and the LLM repair loop are planned for M2-M4.
+
+```r
+# install.packages("remotes")
+remotes::install_github("zhuygln/equivR")
+```
+
+Validate a candidate against a reference with a YAML contract:
+
+```r
+library(equivR)
+
+res <- equiv_validate(contract = "contract.yaml")   # artifacts declared in the contract
+res                                                 # human-readable report
+equiv_passed(res)                                   # TRUE only if all required checks pass
+write_result_json(res, "evidence.json")             # machine-readable evidence
+```
+
+Or build the contract in R:
+
+```r
+res <- equiv_validate(reference_df, candidate_df,
+                      equiv_contract(keys = "id", abs_tol = 1e-8, rel_tol = 1e-8))
+```
+
+Semantics are fail-closed:
 
 - exact match -> PASS;
 - numerical difference inside tolerance -> PASS;
 - numerical difference outside tolerance -> FAIL with diagnostics;
-- structural/key mismatch -> FAIL.
+- structural, key, or missing-value mismatch -> FAIL;
+- a required check that cannot be evaluated -> FAIL.
 
-This is deliberately small. The grant expands the proof of concept into reusable cross-runtime infrastructure, R-facing workflows, evidence generation, and community benchmarks.
-
-Run the prototype checks with:
+Development:
 
 ```sh
-Rscript examples/basic_validation.R
+R CMD INSTALL . && Rscript examples/basic_validation.R
+Rscript -e 'testthat::test_local()'
+EQUIVR_UPDATE_GOLDEN=1 Rscript -e 'testthat::test_local()'   # regenerate golden evidence, then review the diff
 ```
 
 ## License
@@ -85,8 +108,10 @@ Software code in this repository is released under the [Mozilla Public License 2
 
 ## Funding note
 
-The proposal requests **$5,000 over four months**. No ISC funding is requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
+The proposal requests **$5,000 over four months**; no funding has been awarded yet. No ISC funding is requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
 
 ## Status
 
-Early prototype and grant-proposal stage.
+- **M1** (equivalence contract and deterministic validation): implemented, under review in pull request #1.
+- **Next: M2** (SAS -> R modernization demonstration with pregenerated SAS reference artifacts).
+- Grant proposal: prepared for the R Consortium ISC 2026-2 cycle; not yet awarded.

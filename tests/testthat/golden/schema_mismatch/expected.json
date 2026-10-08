@@ -1,0 +1,208 @@
+{
+  "schema_version": "equivr-result/v1",
+  "status": "FAIL",
+  "contract": {
+    "version": "equivr-contract/v1",
+    "name": "schema_mismatch",
+    "sha256": "1d237f99554a75484295fb0b5368cd7fa52b6242eaccb94411c3860173859e9a"
+  },
+  "artifacts": {
+    "reference": {
+      "source": "reference.csv",
+      "format": "csv",
+      "sha256": "247d03c5146dd6810e9a725a46bc7c280289e715d25bfa3e7c9c9ea1ab942530",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "group"
+      ]
+    },
+    "candidate": {
+      "source": "candidate.csv",
+      "format": "csv",
+      "sha256": "e2797511fe1e466b4cdd35beb07d1e6848d91881e108d7f985b8a2e101184745",
+      "n_rows": 3,
+      "n_cols": 4,
+      "columns": [
+        "id",
+        "estimate",
+        "count",
+        "note"
+      ]
+    }
+  },
+  "summary": {
+    "n_checks": 11,
+    "n_passed": 7,
+    "failed_required": [
+      "schema.missing_fields",
+      "schema.extra_fields",
+      "schema.type_mismatch",
+      "values.exact"
+    ],
+    "failed_optional": []
+  },
+  "checks": [
+    {
+      "id": "schema.missing_fields",
+      "required": true,
+      "status": "fail",
+      "n_mismatch": 1,
+      "fields": [
+        "group"
+      ],
+      "message": "1 required/reference field(s) missing.",
+      "diagnostics": [
+        {
+          "field": "group",
+          "missing_from": "candidate"
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.extra_fields",
+      "required": true,
+      "status": "fail",
+      "n_mismatch": 1,
+      "fields": [
+        "note"
+      ],
+      "message": "1 extra candidate field(s).",
+      "diagnostics": [
+        {
+          "field": "note"
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "schema.type_mismatch",
+      "required": true,
+      "status": "fail",
+      "n_mismatch": 1,
+      "fields": [
+        "count"
+      ],
+      "message": "1 field(s) with mismatched types.",
+      "diagnostics": [
+        {
+          "field": "count",
+          "reference_type": "numeric",
+          "candidate_type": "character"
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.present",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_reference",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "keys.unique_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.missing_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "rows.extra_in_candidate",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.missingness",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.exact",
+      "required": true,
+      "status": "fail",
+      "n_mismatch": 3,
+      "fields": [
+        "count"
+      ],
+      "message": "3 exact-value mismatch(es) in: count.",
+      "diagnostics": [
+        {
+          "field": "count",
+          "key": {
+            "id": "A"
+          },
+          "reference": 10,
+          "candidate": "ten"
+        },
+        {
+          "field": "count",
+          "key": {
+            "id": "B"
+          },
+          "reference": 20,
+          "candidate": "twenty"
+        },
+        {
+          "field": "count",
+          "key": {
+            "id": "C"
+          },
+          "reference": 30,
+          "candidate": "thirty"
+        }
+      ],
+      "n_diagnostics_omitted": 0
+    },
+    {
+      "id": "values.numeric",
+      "required": true,
+      "status": "pass",
+      "n_mismatch": 0,
+      "fields": [],
+      "message": "OK",
+      "diagnostics": [],
+      "n_diagnostics_omitted": 0
+    }
+  ]
+}
