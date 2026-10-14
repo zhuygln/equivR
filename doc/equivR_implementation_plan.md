@@ -1,50 +1,113 @@
 # equivR Implementation Plan
 
-**Architecture revision:** 13 October 2026
-**Status:** proposed implementation plan; replaces the previous component-first schedule, not the R Consortium ISC proposal.
-**Authority for scope and milestone commitments:** `proposal/03-proposal.qmd` and `proposal/04-timeline.qmd`.
+**Architecture revision:** 14 October 2026 (supersedes the 13 October revision)
+**Status:** proposed implementation plan; replaces earlier schedules, not the R Consortium ISC proposal.
+**Authority for scope and milestone commitments:** `proposal/03-proposal.qmd`, `proposal/04-timeline.qmd` and `proposal/05-success.qmd`.
+
+> **equivR modernizes analytical code through an agentic workflow and establishes confidence in the result through independent, reproducible verification.**
 
 ## 1. Objective and scope
 
-`equivR` is an independent, open-source toolkit for modernizing analytical implementations while verifying that their declared analytical behavior matches trusted reference artifacts. The first demonstration is SAS → R, using pregenerated SAS outputs; the second is legacy R → modern R. An LLM or human may create or repair candidate code, but only deterministic validation against a versioned equivalence contract decides acceptance.
+Consider migrating an existing SAS analytical program to R. The objective is not to reproduce one table of numbers, but to:
 
-Phase 1 is artifact-based. It does not promise a general SAS-to-R or Python-to-R translator, access to live SAS in CI, regulatory certification, or universal program equivalence. The system must be model-independent, usable without proprietary IDEs, and practical for enterprise users with existing coding-agent subscriptions and security controls.
+1. **Understand the original analytical workflow:** inspect the source code, dependencies, procedures, data structures and relevant statistical semantics.
+2. **Generate an R implementation:** use an LLM-powered coding agent to translate or modernize the original program.
+3. **Execute and test the implementation:** run the candidate R program on representative datasets, using trustworthy reference results from the original runtime.
+4. **Identify semantic differences:** determine whether discrepancies arise from data handling, missing values, numerical methods, statistical conventions or other behavioral differences.
+5. **Repair the implementation:** use the agent to revise the code based on structured diagnostics and domain knowledge.
+6. **Establish evidence of equivalence:** verify the final implementation across meaningful tests, edge cases and declared analytical requirements.
+
+The end product is **a modernized, executable R implementation with an auditable verification report**: code changes, reproducible tests, provenance and residual limitations. It is not a PASS/FAIL comparison of two saved outputs. Deterministic comparison of output artifacts is an essential part of the verification infrastructure, but it is not the defining feature of the system.
+
+The first Phase 1 demonstration is SAS → R, using pregenerated SAS reference outputs; the second is legacy R → modern R. Generation and repair are agentic, but **acceptance is never decided by the model**: only independent, deterministic verification against declared acceptance criteria can accept a candidate.
+
+Phase 1 is deliberately bounded (see Section 2.3). It does not promise a general SAS-to-R or Python-to-R translator, live SAS in CI, regulatory certification, or a proof that arbitrary programs are equivalent. The system must be model-independent, usable without proprietary IDEs, and practical for enterprise users with existing coding-agent subscriptions and security controls.
 
 ## 2. Fundamental architectural decisions
 
-### 2.1 Three modes, one authoritative validator
+### 2.1 Architecture overview
 
-1. **Validation-only / R-native:** R users invoke an installable R package locally or in CI, with no Python installation, API key, coding assistant, or model credentials required.
-2. **Standalone modernization agent:** a Python CLI uses an interchangeable coding-agent SDK to inspect source code, propose and repair an R candidate, and invoke the same R validator.
-3. **Bring Your Own Agent (BYOA):** users of GitHub Copilot in VS Code, Claude Code, or OpenAI Codex invoke `equivR` through a local MCP server, CLI and portable Agent Skills. The coding assistant retains control of its own agent loop and model authentication; an additional `equivR`-specific model subscription is not required in this mode.
+```text
+Original SAS / legacy R project
+  source code · dependencies · data semantics · analytical requirements
+                              |
+                              v
++------------------------------------------------------------+
+| Agentic modernization engine                               |
+|   Analyze -> Plan -> Generate -> Execute -> Diagnose -> Repair
+|   (standalone coding-agent SDK, or Copilot / Claude Code / Codex)
++------------------------------------------------------------+
+                              |            ^
+              candidate R +   |            |  structured diagnostics,
+              execution runs  v            |  semantic-difference findings
++------------------------------------------------------------+
+| Verification and convergence infrastructure                |
+|   contracts · test generation · reference execution/artifacts
+|   statistical checks · invariants · differential testing   |
+|   deterministic acceptance · evidence                      |
++------------------------------------------------------------+
+                              |
+        feedback until acceptance criteria pass
+        or limitations are reported
+                              v
+Modernized R code + verification report
+  code changes · reproducible tests · provenance · residual limitations
+```
 
-The existing enterprise subscription does not necessarily authorize SDK/API usage, and an administrator may restrict local tools. User guides must distinguish supported client usage from programmatic SDK credentials and disclose when prompts or code may be sent to the user's configured model provider.
+The two halves are deliberately separate. The modernization engine is allowed to be creative and nondeterministic. The verification infrastructure is independent of it, reproducible, and the only authority for acceptance.
 
-### 2.2 Separate agent orchestration from verification workflow
+### 2.2 Two user-facing workflows
 
-Agent orchestration (repository navigation, model interaction, editing files, invoking shell tools and context management) should be delegated to an existing coding-agent runtime. `equivR` should not rebuild a general-purpose coding harness.
+1. **Standalone modernization:** `equivR` runs its own coding agent (through an interchangeable coding-agent SDK) and its own verification loop, from source analysis to verification report.
+2. **Bring Your Own Agent (BYOA):** users of GitHub Copilot in VS Code, Claude Code or OpenAI Codex drive the modernization in their existing assistant, which uses `equivR`'s modernization skills, execution tools and verification infrastructure through a local MCP server, CLI and portable Agent Skills. The assistant keeps its own agent loop and model authentication; no additional `equivR`-specific model subscription is required.
 
-Verification workflow orchestration belongs to `equivR`: reference locking, execution budgets, candidate execution, comparison, diagnostics, attempts, convergence, acceptance and evidence. Begin with a small, typed Python state machine; consider LangGraph or durable workflow engines only if measured requirements for checkpointing, long-running tasks or recovery justify them. MCP is a tool protocol, not an orchestration engine.
+In both workflows the same verification infrastructure decides acceptance. Its deterministic validation API is also a **reusable capability in its own right**: developers and CI can re-run verification independently, from R or the CLI, without Python, a coding assistant or model credentials. This is how a verdict reached during an agent session is reproduced and audited; it is not a separate product mode.
 
-### 2.3 Component and language choices
+An existing enterprise subscription does not necessarily authorize SDK/API usage, and an administrator may restrict local tools. User guides must distinguish supported client usage from programmatic SDK credentials and disclose when prompts or code may be sent to the user's configured model provider.
+
+### 2.3 Phase 1 commitment versus long-term direction
+
+The ISC proposal commits Phase 1 to an LLM that generates or repairs R code, a bounded repair loop, deterministic acceptance and two complete modernization demonstrations, while narrowing verification to pregenerated SAS reference artifacts and selected analytical results.
+
+| Capability | Phase 1 commitment | Long-term direction |
+|---|---|---|
+| Agent-generated R code | Yes | Yes |
+| Automated diagnosis and repair | Bounded example | More sophisticated autonomous repair |
+| Verification of datasets and statistical outputs | Yes | Broader behavioral and semantic verification |
+| Multiple meaningful test cases | Desirable | Systematic test generation |
+| Automated source-code semantic analysis | Limited | Deeper static and dynamic analysis |
+| Live SAS execution | Not required | Optional runtime adapter |
+| General equivalence proof | No | Selected formal or property-based methods where practical |
+
+Phase 1 does not claim that arbitrary SAS and R programs can be proven equivalent. Every verification report states exactly what was checked and what remains unverified.
+
+### 2.4 Separate agent orchestration from verification orchestration
+
+Agent orchestration (repository navigation, model interaction, editing files, invoking shell tools and context management) is delegated to an existing coding-agent runtime. `equivR` should not rebuild a general-purpose coding harness.
+
+`equivR` owns the **modernization workflow** around that runtime (what to analyze, what to plan, what context and diagnostics to give the agent) and the **verification workflow** (reference locking, test selection, execution budgets, candidate execution, comparison, diagnosis, attempts, convergence, acceptance and evidence). Begin with a small, typed Python state machine; consider LangGraph or durable workflow engines only if measured requirements for checkpointing, long-running tasks or recovery justify them. MCP is a tool protocol, not an orchestration engine.
+
+### 2.5 Component and language choices
 
 | Layer | Choice | Responsibility |
 |---|---|---|
-| Equivalence contract | Versioned YAML/JSON with JSON Schema | Row keys, field rules, tolerances, structured analytical results, required checks |
-| Authoritative validator | **R package** | Normalization, data/result comparisons, fail-closed decisions, diagnostics, evidence |
-| Standalone CLI/controller | **Python**, initially a typed state machine | Launch candidate runs, manage attempts and adapters, enforce budgets |
+| Modernization engine (analysis, planning, generation, repair) | **Python** workflow around a selected coding-agent runtime | Source inspection, migration plan, agent prompts and context, repair from diagnostics. Phase 1: limited source analysis, bounded repair |
 | Coding-agent runtime | Select after measured SDK spike | Repository-aware code generation and repair; never owns PASS/FAIL |
+| Verification orchestration | **Python**, initially a typed state machine | Run candidates, select tests, manage attempts and budgets, assemble the verification report |
+| Verification core | **R package** | Normalization, dataset and statistical-result comparison, invariants, fail-closed decisions, diagnostics, evidence |
+| Test generation / differential testing | Python orchestration + R execution | Multiple inputs, seeded and edge cases, differential runs against references. Phase 1: a small hand-built set; systematic generation is long-term |
+| Equivalence contract | Versioned YAML/JSON with JSON Schema | Row keys, field rules, tolerances, structured analytical results, required checks |
 | BYOA integration | **Local MCP server + portable skills + CLI** | Interoperate with Copilot, Claude Code, Codex without replacing them |
 | Execution | Isolated R workspace/container, pinned dependencies | Execute untrusted R candidates, limit network/time/resources, keep trusted inputs read-only |
 | Artifacts | CSV + explicit schema / JSON first; Parquet optionally | Exchange trusted and candidate results across runtimes |
-| Evidence | Versioned result JSON, hashes, provenance | Reproducible decisions, attempt lineage, check-level details |
+| Evidence and report | Versioned result JSON, hashes, provenance, human-readable report | Reproducible decisions, attempt lineage, check-level details, residual limitations |
 | CI | GitHub Actions + R checks + Python tests | Credential-free deterministic acceptance |
 
-R and Python must communicate through stable, documented interfaces; do not implement the validator independently in both languages. The model may edit candidate code, but must not change the locked reference, equivalence contract, validation engine or final verdict.
+R and Python communicate through stable, documented interfaces; do not implement the verification core independently in both languages. The model may edit candidate code, but must not change the locked reference, equivalence contract, verification engine or final verdict.
 
-### 2.4 SDK and framework evaluation
+### 2.6 SDK and framework evaluation
 
-Benchmark these on an identical small synthetic SAS → R repair task:
+Benchmark these on an identical small synthetic SAS → R modernization task:
 
 - **OpenHands Software Agent SDK:** open-source coding-agent option for standalone execution.
 - **GitHub Copilot SDK:** standalone candidate with supported sign-in/BYOK configurations; particularly relevant to prior SASaiPy experience.
@@ -53,7 +116,7 @@ Benchmark these on an identical small synthetic SAS → R repair task:
 
 Do not mistake the general OpenAI Agents SDK for the coding-oriented Codex SDK; evaluate the former only if a custom tools/workflows design proves necessary. SDK availability, licensing, authentication, enterprise suitability and sandbox behavior must be verified at implementation time.
 
-Use one fixed contract, trusted reference, prompt/task, source program and environment per comparison. Record: analytical correctness, attempts to PASS, time, API cost, tool/workspace control, diagnostic injection, sandbox isolation, trace quality, version constraints and maintenance burden. Adopt one primary standalone backend after the spike; at least one other representative backend should be demonstrably swappable without touching validation logic. Defer support for every possible runtime until demand justifies it.
+Use one fixed source program, contract, trusted reference, task and environment per comparison. Record: analytical correctness, attempts to acceptance, time, API cost, tool/workspace control, diagnostic injection, sandbox isolation, trace quality, version constraints and maintenance burden. Adopt one primary standalone backend after the spike; at least one other representative backend should be demonstrably swappable without touching verification logic. Defer support for every possible runtime until demand justifies it.
 
 A minimal adapter interface is conceptually:
 
@@ -62,18 +125,19 @@ propose_or_repair(task, read_only_context, diagnostics, writable_workspace, limi
     -> candidate_revision + agent_trace_metadata
 ```
 
-### 2.5 Enterprise interoperability as a product requirement
+### 2.7 Enterprise interoperability as a product requirement
 
 Expose core capabilities through a single implementation with three faces: R API, command-line interface and local MCP tools. Suggested tools:
 
 ```text
-equivr_validate
+equivr_analyze_source
 equivr_run_candidate
+equivr_validate
 equivr_inspect_diagnostics
-equivr_evidence
+equivr_report
 ```
 
-Portable Markdown skills encapsulate domain knowledge, not framework-specific orchestration:
+Portable Markdown skills encapsulate domain knowledge (SAS procedure semantics, R idioms, how to read equivR diagnostics), not framework-specific orchestration:
 
 ```text
 skills/sas-to-r/SKILL.md
@@ -81,11 +145,11 @@ skills/modernize-r/SKILL.md
 skills/diagnose-equivalence/SKILL.md
 ```
 
-Provide thin per-client setup in `integrations/vscode-copilot/`, `integrations/claude-code/` and `integrations/codex/`; do not create three different validation or repair engines. Document how to use an existing approved coding-agent sign-in, how local MCP tool permissions work, and how to run final validation independently.
+Provide thin per-client setup in `integrations/vscode-copilot/`, `integrations/claude-code/` and `integrations/codex/`; do not create three different modernization or verification engines. Document how to use an existing approved coding-agent sign-in, how local MCP tool permissions work, and how to run final verification independently.
 
-**Crucial trust boundary:** an externally orchestrated Copilot, Claude Code or Codex session may ignore instructions or skip validation. A generated agent summary cannot itself establish PASS. The independent `equivr validate` command and CI must be able to reconstruct the verdict using protected artifacts and contract.
+**Crucial trust boundary:** an externally orchestrated Copilot, Claude Code or Codex session may ignore instructions or skip verification. A generated agent summary cannot itself establish acceptance. The independent `equivr validate` command and CI must be able to reconstruct the verdict using protected artifacts and contract.
 
-### 2.6 Rejected and deferred technology
+### 2.8 Rejected and deferred technology
 
 Do not depend on VS Code/Copilot as the sole agent host; do not build a new low-level coding harness; and do not introduce Kubernetes, Temporal, a hosted UI, multi-agent collaboration, or LangGraph merely because the workflow has a loop. Revisit each only with measured evidence of need.
 
@@ -107,20 +171,40 @@ Define a stable `equivr-result/v1` including PASS/FAIL, contract version/hash, a
 
 Execute untrusted R candidate code in an isolated workspace/container with resource limits and restricted network access. Treat reference artifacts, test cases and contracts as immutable trusted inputs. Add seeded regressions, multiple synthetic inputs and holdout/metamorphic checks to reduce the risk of hard-coded output imitation. A PASS certifies only what the contract actually checks; it is not a formal proof of general semantic equivalence.
 
+### 3.5 Source analysis artifacts
+
+The modernization engine records what it learned about the original program before generating code: procedures and functions used, inputs and outputs, data-handling assumptions (missing values, formats, sort order, by-group processing), statistical methods and options, and known semantic risks between the source and target runtimes. In Phase 1 this is a limited, partly agent-produced inventory; it guides generation and diagnosis and is included in the report, but it is never evidence of equivalence on its own.
+
+### 3.6 Verification report
+
+The final deliverable of each modernization run is a versioned report that combines:
+
+- the code changes (the modernized R program and its revision history across attempts);
+- the source analysis and migration plan;
+- the tests executed (inputs, references, seeded and edge cases) and the contract used;
+- check-level results and the deterministic verdict from `equivr-result/v1`;
+- semantic differences found and how each was resolved;
+- provenance (artifact hashes, environment, source revision, agent backend and model metadata);
+- **residual limitations**: behavior not covered by the contract or tests, unsupported constructs, and anything accepted with documented caveats.
+
+The report must be reproducible: re-running verification from the stored artifacts and contract yields the same verdict.
+
 ## 4. Proposed repository layout
 
 ```text
 equivR/
-├── R/                         # R package: authoritative deterministic validator
+├── R/                         # R package: verification core (deterministic)
 │   ├── contract.R
 │   ├── normalize.R
 │   ├── compare_dataset.R
 │   ├── compare_results.R
 │   └── evidence.R
-├── equivr/                     # Optional Python standalone agent and tools
-│   ├── workflow/
-│   ├── agent_backends/
-│   ├── execution/
+├── equivr/                     # Python: agentic modernization engine and verification orchestration
+│   ├── analysis/               # source inspection and migration planning
+│   ├── workflow/               # modernization/convergence state machine
+│   ├── agent_backends/         # replaceable coding-agent adapters
+│   ├── verification/           # test selection, differential runs, calls the R core, builds the report
+│   ├── execution/              # isolated candidate execution
 │   ├── mcp_server/
 │   └── cli.py
 ├── schemas/
@@ -153,32 +237,32 @@ On `main`, only the following exist outside `proposal/`:
 
 | Path | What it is | Target-layout status |
 |---|---|---|
-| `R/equivR.R` | Base-R proof of concept (`equiv_contract()`, `equiv_compare()`) with fail-closed exact/tolerance/structural checks | Prototype; to be replaced by the R package modules above |
+| `R/equivR.R` | Base-R proof of concept (`equiv_contract()`, `equiv_compare()`) with fail-closed exact/tolerance/structural checks | Prototype; to be replaced by the R verification-core modules above |
 | `examples/basic_validation.R` | Script exercising the prototype's PASS/FAIL cases | Kept as a smoke example until the package exists |
 | `doc/equivR_implementation_plan.md` | This plan | Current |
 | `LICENSE`, `NOTICE.md`, `README.md` | MPL-2.0 license, template attribution, project overview | Current |
 
-Everything else in the layout (`R/contract.R`, `R/normalize.R`, `R/compare_*.R`, `R/evidence.R`, `DESCRIPTION`, `schemas/`, `tests/`, `equivr/`, `skills/`, `integrations/`, `benchmarks/`, `doc/contract.md`, `doc/architecture.md`, `doc/enterprise-integration.md`, `.github/workflows/`) does not exist on `main` yet.
+Everything else in the layout (the R package modules, `DESCRIPTION`, `schemas/`, `tests/`, `equivr/`, `skills/`, `integrations/`, `benchmarks/`, `doc/contract.md`, `doc/architecture.md`, `doc/enterprise-integration.md`, `.github/workflows/`) does not exist on `main` yet.
 
-An earlier M1 implementation (R package scaffolding, `contract-v1` parser, dataset checks, JSON schemas, golden tests, R-CMD-check workflow) is preserved on the unmerged branch `feature/m1-deterministic-core` from closed PR #1. It is reference material only: individual pieces may be ported after the Week 1 architecture spike, through new reviewed changes, but the branch is not the baseline for this layout.
+An earlier M1 implementation (R package scaffolding, `contract-v1` parser, dataset checks, JSON schemas, golden tests, R-CMD-check workflow) is preserved on the unmerged branch `feature/m1-deterministic-core` from closed PR #1. It is reference material only: individual pieces may be ported into the verification core after the vertical slice, through new reviewed changes, but the branch is not the baseline for this layout.
 
 ## 5. Four-month engineering schedule
 
-Workstreams overlap so the complete modernization workflow is validated early, while formal ISC milestones remain unchanged.
+The schedule starts with a **vertical slice of the whole modernization workflow**, not with a standalone comparison library, and then hardens each component. The ISC milestone deliverables in Section 6 are unchanged: M1's committed deliverable (equivalence contract, deterministic validation, diagnostics, tests) is still produced within Months 1–2; only the engineering order begins with the slice.
 
 | Timing | Work | Output and gate |
 |---|---|---|
-| Week 1 | SDK and enterprise interoperability spike | Compare OpenHands/Copilot SDK/Codex SDK on fixed SAS → R task; demonstrate local MCP call; record architecture decision |
-| Week 2 | Complete thin vertical slice | Generate R → execute → compare → diagnose → repair; one seeded failure detected; protected contract/reference |
-| Weeks 3–4 | M1 validation hardening + M2 preparation | Contract v1, exact/numeric/key/schema/missingness checks, fail-closed evidence, golden fixtures; pregenerated SAS artifact |
-| Weeks 5–6 | M2 SAS → R example | Canonical result checks, SAS reference provenance, clean-checkout benchmark and seeded regression failures |
-| Week 7 | BYOA interoperability groundwork | Shared CLI/MCP tools and portable skills; pilot Copilot/Codex, then Claude Code; same verdict through R API/CLI/MCP |
-| Weeks 8–9 | M3 legacy R → modern R | Second benchmark, documented benchmark contribution format, seeded analytical differences rejected |
-| Week 10 | M3 interfaces and CI | R-friendly invocation, full credential-free CI, clean-checkout setup |
-| Weeks 11–12 | M4 bounded agent repair | Typed controller, replaceable backend, iteration/cost/time limits, failed-to-PASS repair trace |
-| Weeks 13–14 | M4 reproducibility/security | Artifacts, hashes, source/model metadata, immutable reference tests, sandbox hardening, BYOA acceptance tests |
-| Week 15 | M5 docs and release candidate | R-only, standalone and enterprise BYOA setup guides; architecture and contribution docs |
-| Week 16 | M5 final release | Tagged release; deterministic CI green; published demo and evidence |
+| Week 1 | Vertical slice part 1 + SDK spike | One small synthetic SAS program with pregenerated reference outputs and a locked contract. Minimal source analysis and migration plan. Compare OpenHands/Copilot SDK/Codex SDK on generating the first R candidate; record the architecture decision |
+| Week 2 | Vertical slice part 2 | Analyze → plan → generate → execute → diagnose → repair on that program; at least one semantic difference found and repaired; first verification report; protected contract/reference; one MCP call demonstrated |
+| Weeks 3–4 | M1 verification-core hardening + M2 preparation | Contract v1, exact/numeric/key/schema/missingness checks, fail-closed evidence, golden fixtures; pregenerated SAS artifacts for the public M2 example |
+| Weeks 5–6 | M2 SAS → R modernization | Agent-generated R validated against SAS references; canonical statistical-result checks; multiple test inputs and seeded regressions; verification report from a clean checkout |
+| Week 7 | BYOA interoperability groundwork | Shared CLI/MCP tools and portable skills; pilot Copilot/Codex, then Claude Code; same verdict through R API, CLI and MCP |
+| Weeks 8–9 | M3 legacy R → modern R | Second modernization benchmark with its verification report; benchmark contribution format; seeded analytical differences rejected |
+| Week 10 | M3 interfaces and CI | R-friendly invocation, full credential-free CI re-verifying both benchmarks, clean-checkout setup |
+| Weeks 11–12 | M4 bounded agent repair | Typed controller, replaceable backend, iteration/cost/time limits, failing-to-accepted repair trace |
+| Weeks 13–14 | M4 reproducibility/security | Report provenance, hashes, source/model metadata, immutable reference tests, sandbox hardening, BYOA acceptance tests |
+| Week 15 | M5 docs and release candidate | Standalone and BYOA setup guides, independent re-verification guide, architecture and contribution docs |
+| Week 16 | M5 final release | Tagged release; deterministic CI green; published demonstrations with verification reports |
 
 ## 6. Mapping to submitted ISC milestones and budget
 
@@ -190,32 +274,34 @@ Workstreams overlap so the complete modernization workflow is validated early, w
 | **M4** | Month 3–4 | Model-independent bounded LLM repair loop and reproducibility evidence | **$750** |
 | **M5** | Month 4 | Documentation, examples, release hardening and tagged release | **$1,000** |
 
-Total requested grant budget: **$5,000** over four months. No additional grant funds are assumed for cloud services, AI credits, hardware, travel, licensed SAS or indirect costs. SDK evaluation, MCP and BYOA support are engineering design and adoption decisions under these milestones, not new funding promises. Implementation can proceed independently of a grant award.
+Total requested grant budget: **$5,000** over four months. No additional grant funds are assumed for cloud services, AI credits, hardware, travel, licensed SAS or indirect costs. The vertical slice, SDK evaluation, MCP and BYOA support are engineering design and adoption decisions under these milestones, not new funding promises. Implementation can proceed independently of a grant award.
 
-## 7. Agent-independent control logic
+## 7. Modernization and convergence loop
 
 ```text
-trusted SAS/R reference + locked contract
-                     |
-          coding agent proposes R
-            (standalone or BYOA)
-                     |
-           isolated R execution
-                     |
-          normalize output artifacts
-                     |
-        authoritative R validation
-                /           \
-             PASS           FAIL / ERROR
-               |                  |
-       emit hashed evidence   structured diagnostics
-               |                  |
-          accept result    bounded agent repair
-                                  |
-                             next candidate
+original SAS / legacy R program + trusted reference artifacts + locked contract
+                              |
+                  analyze source and plan migration
+                              |
+             coding agent generates R (standalone or BYOA)
+                              |
+                    isolated R execution on test inputs
+                              |
+                    normalize output artifacts
+                              |
+            independent deterministic verification (R core)
+                      /                       \
+                PASS (all required)        FAIL / ERROR
+                     |                           |
+           assemble verification report   diagnose semantic differences
+                     |                           |
+         accept modernized R + report     bounded agent repair
+                                                 |
+                                          next candidate
+                                    (or stop and report limitations)
 ```
 
-The controller stops upon validated PASS, exhausted attempts/time/cost, unrecoverable execution failure or repeated nonprogress. It records candidate revisions and validator outputs. Neither an SDK nor an MCP client can determine acceptance, and the model cannot lower required tolerances as part of repair. BYOA mode cannot guarantee an external client's loop behavior; final independent CLI/CI validation is mandatory before claims of verified equivalence.
+The controller stops upon verified acceptance, exhausted attempts/time/cost, unrecoverable execution failure or repeated nonprogress; a run that stops without acceptance still produces a report stating what failed and what remains unresolved. It records source analysis, candidate revisions and verification outputs. Neither an SDK nor an MCP client can determine acceptance, and the model cannot lower required tolerances or edit tests as part of repair. BYOA mode cannot guarantee an external client's loop behavior; independent CLI/CI re-verification is mandatory before claims of verified equivalence.
 
 ## 8. Public benchmark specification
 
@@ -224,10 +310,12 @@ Each benchmark is self-contained and openly redistributable:
 ```text
 benchmark/
 ├── benchmark.yaml
+├── source/         # original SAS or legacy R program
 ├── contract.yaml
 ├── reference/      # pregenerated and hashed, read-only
-├── candidate/      # R implementation
-├── expected/       # expected PASS/FAIL for golden or seeded cases
+├── inputs/         # representative and edge-case test datasets
+├── candidate/      # modernized R implementation
+├── expected/       # expected verdicts for golden and seeded cases
 └── README.md
 ```
 
@@ -237,52 +325,54 @@ Benchmark manifests document source/target runtimes, artifact generation, expect
 
 1. **R unit tests:** contract parsing, key alignment, missing values, exact and tolerance boundaries, structured results, hashes and required-check aggregation.
 2. **Golden tests:** complete machine-readable expected verdicts for deterministic fixtures, including boundary failures and malformed inputs.
-3. **End-to-end benchmarks:** both examples run from a clean checkout, with no live SAS and no hosted LLM; seeded regressions must fail.
-4. **SDK spike:** use the same task/reference/contract to compare agent backends on verified success, attempts, runtime, expense, observability and permissions.
-5. **BYOA compatibility:** Copilot, Claude Code and Codex can call the local `equivR` MCP tools; R API, CLI and MCP return the same verdict on identical inputs; document access prerequisites per client.
-6. **Adversarial and security:** agents cannot rewrite references/contracts, fabricate PASS, or skip required checks; untrusted code is subject to execution limits.
-7. **CI design:** required CI never calls paid models; optional external-provider tests are separate and access-dependent.
+3. **End-to-end modernization:** both benchmarks run from a clean checkout and produce a verification report; deterministic re-verification needs no live SAS and no hosted LLM; seeded regressions must fail.
+4. **Differential and multiple-input testing:** each benchmark is verified on more than one input dataset, including edge cases (missing values, ties, empty groups), so a candidate cannot pass by matching one saved output.
+5. **Source analysis:** the analysis step identifies the procedures, inputs and outputs of each benchmark program; its inventory is checked against a hand-written expectation.
+6. **SDK spike:** use the same program/reference/contract to compare agent backends on verified success, attempts, runtime, expense, observability and permissions.
+7. **BYOA compatibility:** Copilot, Claude Code and Codex can call the local `equivR` MCP tools; R API, CLI and MCP return the same verdict on identical inputs; document access prerequisites per client.
+8. **Adversarial and security:** agents cannot rewrite references, tests or contracts, fabricate acceptance, or skip required checks; untrusted code is subject to execution limits.
+9. **CI design:** required CI never calls paid models; optional external-provider tests are separate and access-dependent.
 
 ## 10. Main risks and mitigations
 
 | Risk | Mitigation |
 |---|---|
 | Rebuilding Copilot's coding harness | Adopt existing coding-oriented SDK; define small replaceable backend adapter |
-| Lock-in to one IDE/model/account | Independent R validation, CLI, MCP and portable skills |
+| Lock-in to one IDE/model/account | Independent R verification core, CLI, MCP and portable skills |
 | Subscription incompatible with SDK API | Distinguish BYOA client mode and standalone API/SDK credentials; document limits |
-| External agent omits validation | Require independent final command/CI verification |
-| Agent changes test oracle/contract | Immutable reference/contract, checksums, permissions and adversarial tests |
+| External agent omits verification | Require independent final command/CI re-verification |
+| Agent changes test oracle/contract | Immutable reference/contract/tests, checksums, permissions and adversarial tests |
 | Reference case too easy to game | Multiple input cases, seeded failures and holdout/metamorphic checks |
-| Cross-runtime semantic mismatch | Explicit adapters and contracts; document unsupported behavior |
-| Data leaves enterprise through model calls | Local validation, explicit provider/trust boundary and configurable network policy |
-| Excessive frameworks or packaging scope | One core, one primary standalone SDK, minimal controller, thin integrations |
+| Cross-runtime semantic mismatch | Source analysis, explicit adapters and contracts; document unsupported behavior in the report |
+| Overclaiming equivalence | Reports list exactly what was checked and the residual limitations; no general equivalence claims |
+| Data leaves enterprise through model calls | Local verification, explicit provider/trust boundary and configurable network policy |
+| Excessive frameworks or packaging scope | One verification core, one primary standalone SDK, minimal controller, thin integrations |
 | Undetected required-check error | Fail closed, typed errors and golden integration tests |
 
 ## 11. Definition of done
 
 Phase 1 is complete only when:
 
-- an R user can install/run the deterministic validator locally and in CI without Python or LLM credentials;
-- the public SAS → R and legacy R → modern R benchmarks work from clean checkouts without live SAS;
+- both public demonstrations (SAS → R and legacy R → modern R) produce **modernized, executable R code plus a verification report**, from a clean checkout, without live SAS;
+- in at least one demonstration, a bounded agent-driven loop starts from a failing R candidate, diagnoses the semantic differences and reaches independently verified acceptance;
 - required checks always enforce fail-closed acceptance, with reproducible diagnostics and evidence;
-- a bounded agent-driven repair demonstration begins with a failing R candidate and reaches an independently verified PASS;
-- the coding-agent backend can be replaced without modifying the validator, with an alternate adapter exercised in a representative test;
-- standalone CLI operation is documented, including credential requirements for its chosen SDK;
+- verification can be re-run independently, locally and in CI, without Python, a coding assistant or LLM credentials, and reproduces the reported verdict;
+- the coding-agent backend can be replaced without modifying the verification core, with an alternate adapter exercised in a representative test;
+- standalone operation is documented, including credential requirements for its chosen SDK;
 - local MCP tools and portable skills are demonstrated or documented with VS Code Copilot, Claude Code and Codex, including unsupported/client-policy caveats;
 - using an existing supported BYOA client does not require a new `equivR`-specific model key or subscription;
-- independent final validation, sandbox and read-only reference/contract protections are tested;
-- benchmark contribution guidance, enterprise setup, evidence and licensing documentation are published; and
+- independent re-verification, sandbox and read-only reference/contract/test protections are tested;
+- benchmark contribution guidance, enterprise setup, report format and licensing documentation are published; and
 - a tagged initial release passes required model-free CI.
 
 ## 12. Immediate next steps
 
-1. Create an architecture decision record (ADR) confirming one R validator, optional Python standalone workflow, CLI/MCP/skills BYOA and SDKs as replaceable components.
-2. Assemble one small synthetic SAS → R task with reference artifacts, locked contract and a deliberately wrong R candidate.
-3. Run a time-boxed apples-to-apples OpenHands, Copilot SDK (with supported sign-in/BYOK) and Codex SDK spike; consider Pydantic AI Harness if the first choices are overcomplicated.
-4. Prove the same validation operation is callable from R, CLI and at least one MCP client; then check Copilot, Claude Code and Codex separately.
-5. Implement the narrow complete modernization/repair/verification loop before expanding generic components.
-6. Follow the milestones and gates in Sections 5–6, keeping CI fully deterministic and required-check acceptance independent of any coding assistant.
+1. Create an architecture decision record (ADR) confirming: agentic modernization engine + independent verification infrastructure; two user-facing workflows (standalone, BYOA); a reusable deterministic verification core in R; coding-agent SDKs as replaceable components.
+2. Assemble one small synthetic SAS program with pregenerated reference outputs, a locked contract and several test inputs.
+3. Build the vertical slice on it: analyze → plan → generate → execute → diagnose → repair → verification report, using the first SDK from a time-boxed OpenHands / Copilot SDK (supported sign-in/BYOK) / Codex SDK comparison; consider Pydantic AI Harness if those are overcomplicated.
+4. Prove the same verification operation is callable from R, CLI and at least one MCP client; then check Copilot, Claude Code and Codex separately.
+5. Only then harden individual components (verification core, test generation, source analysis) against the milestones and gates in Sections 5–6, keeping CI fully deterministic and acceptance independent of any coding assistant.
 
 ---
 
-**Relationship to closed PR #1:** The earlier M1 deterministic-core work is reference material only. Reuse reviewed tests, contracts or implementation ideas selectively after the architecture spike; do not assume that closed PR fixes the architecture or that its old milestone sequence is authoritative.
+**Relationship to closed PR #1:** The earlier M1 deterministic-core work is reference material only. Reuse reviewed tests, contracts or implementation ideas selectively for the verification core after the vertical slice; do not assume that closed PR fixes the architecture or that its old milestone sequence is authoritative.
