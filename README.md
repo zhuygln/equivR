@@ -2,23 +2,39 @@
 
 **Reproducible Cross-Runtime Equivalence for R Analytics**
 
-`equivR` is an independent open-source project for modernizing analytical code while independently verifying that its declared analytical behavior matches trusted reference artifacts. The first planned demonstration is **SAS → R**, using pregenerated SAS outputs; the second is **legacy R → modern R**.
+`equivR` is an independent open-source project that **modernizes analytical code through an agentic workflow and establishes confidence in the result through independent, reproducible verification.** The first planned demonstration is **SAS → R**, using pregenerated SAS reference outputs; the second is **legacy R → modern R**.
+
+The goal is not to compare two saved tables. Given an existing analytical program, equivR is meant to understand it, generate an R implementation with an LLM-powered coding agent, execute it against trusted reference results, diagnose semantic differences (missing values, numerical methods, statistical conventions, data handling), repair the code, and produce **modernized R code plus a verification report**: code changes, reproducible tests, provenance and residual limitations.
 
 > **Generation proposes; validation decides.**
 
-A human or a large language model (LLM) may write or repair candidate R code, but only deterministic validation against a versioned equivalence contract decides acceptance. A candidate is accepted only when all required checks in the contract pass; anything else is FAIL with diagnostics for repair. A PASS certifies only what the contract checks; it is not a proof of general program equivalence.
+The agent writes and repairs code, but it never decides acceptance. Only independent, deterministic verification against declared acceptance criteria can accept a candidate, and a PASS certifies only what was checked; it is not a proof of general program equivalence.
 
 ## Planned architecture
 
-One authoritative R validator, used in three ways (see [`doc/equivR_implementation_plan.md`](doc/equivR_implementation_plan.md)):
+```text
+Original SAS / legacy R project
+        |
+Agentic modernization engine
+  Analyze -> Plan -> Generate -> Execute -> Diagnose -> Repair
+  (standalone coding-agent SDK, or Copilot / Claude Code / Codex)
+        |            ^
+        v            |  diagnostics
+Verification and convergence infrastructure
+  contracts · test generation · reference artifacts · statistical checks
+  invariants · differential testing · evidence
+        |
+Modernized R code + verification report
+```
 
-1. **Validation-only / R-native:** an installable R package for local and CI use, with no Python, API key, coding assistant, or model credentials required.
-2. **Standalone modernization agent:** an optional Python CLI that uses an interchangeable coding-agent SDK to propose and repair an R candidate, then calls the same R validator.
-3. **Bring Your Own Agent (BYOA):** users of GitHub Copilot in VS Code, Claude Code, or OpenAI Codex call `equivR` through a local MCP server, the CLI, and portable Agent Skills, keeping their existing approved sign-in. No separate `equivR` model subscription is needed in this mode.
+Two user-facing workflows (see [`doc/equivR_implementation_plan.md`](doc/equivR_implementation_plan.md)):
 
-In every mode the coding agent can edit only the candidate. It cannot change the locked reference artifacts, the contract, the validator, or the verdict. Because an external agent may skip validation, the final verdict must always be reproducible with the independent validate command and in CI.
+1. **Standalone modernization:** equivR runs its own coding agent and verification loop.
+2. **Bring Your Own Agent:** GitHub Copilot, Claude Code or OpenAI Codex uses equivR's modernization skills, execution tools and verification infrastructure through a local MCP server and CLI, keeping its existing approved sign-in.
 
-Phase 1 is artifact-based. It is not a general SAS-to-R or Python-to-R translator, does not need live SAS in CI, and is not regulatory certification.
+Underneath both, a deterministic verification core in R can be re-run on its own, locally or in CI, without Python, a coding assistant or model credentials, so any verdict reached during an agent session can be reproduced and audited. The agent can edit only the candidate code, never the locked references, tests, contract or verdict.
+
+Phase 1 is deliberately bounded: pregenerated SAS reference artifacts, selected analytical results, a bounded repair example, and no live SAS in CI. It is not a general SAS-to-R translator or regulatory certification.
 
 ## Current status
 
@@ -26,7 +42,7 @@ This is early-stage work. **None of the architecture above is implemented on `ma
 
 - **On `main`:** a small base-R proof of concept, [`R/equivR.R`](R/equivR.R), with [`examples/basic_validation.R`](examples/basic_validation.R). It demonstrates the fail-closed acceptance rule: exact match → PASS; numeric difference within tolerance → PASS; difference outside tolerance → FAIL with diagnostics; structural or key mismatch → FAIL.
 - **Reference only:** an earlier M1 implementation (R package, `contract-v1` parser, dataset checks, golden tests) is kept on the unmerged branch `feature/m1-deterministic-core` from closed pull request #1. Pieces may be ported later; it is not the baseline.
-- **Next:** an architecture decision record, a small synthetic SAS → R task, and a time-boxed coding-agent SDK comparison (implementation plan, Section 12).
+- **Next:** a vertical slice of the whole workflow on one small synthetic SAS program (analyze → plan → generate → execute → diagnose → repair → verification report), together with a time-boxed coding-agent SDK comparison (implementation plan, Section 12).
 
 Run the prototype checks with:
 
