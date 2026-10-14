@@ -2,29 +2,37 @@
 
 **Reproducible Cross-Runtime Equivalence for R Analytics**
 
-`equivR` is an independent open-source cross-runtime validation toolkit for R modernization and migration. It validates whether a new analytical implementation reproduces the important data and statistical results of a trusted reference.
-
-R is the community and workflow focus, not a restriction on implementation language. A trusted reference may originate in legacy R, SAS, Python, or another analytical runtime. A candidate may be modern R, a refactor, a package migration, or AI-assisted code. The validation infrastructure may use R and Python internally, but acceptance is based on independently observed artifacts and an explicit equivalence contract.
+`equivR` is an independent open-source project for modernizing analytical code while independently verifying that its declared analytical behavior matches trusted reference artifacts. The first planned demonstration is **SAS → R**, using pregenerated SAS outputs; the second is **legacy R → modern R**.
 
 > **Generation proposes; validation decides.**
 
-A candidate is accepted only when **all required checks in the declared contract pass**. Otherwise `equivR` returns deterministic diagnostics for repair and re-validation.
+A human or a large language model (LLM) may write or repair candidate R code, but only deterministic validation against a versioned equivalence contract decides acceptance. A candidate is accepted only when all required checks in the contract pass; anything else is FAIL with diagnostics for repair. A PASS certifies only what the contract checks; it is not a proof of general program equivalence.
 
-## Phase 1 scope
+## Planned architecture
 
-The R Consortium ISC proposal funds a focused first phase:
+One authoritative R validator, used in three ways (see [`doc/equivR_implementation_plan.md`](doc/equivR_implementation_plan.md)):
 
-- a language-neutral equivalence-contract specification;
-- deterministic dataset and structured-result validation;
-- runtime/artifact normalization for R and pregenerated cross-runtime references;
-- an R-friendly CLI or thin wrapper plus CI workflow;
-- reproducibility metadata and machine-/human-readable evidence;
-- an initial benchmark suite with:
-  1. legacy R -> modern R, and
-  2. cross-runtime trusted reference -> R;
-- a documented format for community-contributed benchmark cases.
+1. **Validation-only / R-native:** an installable R package for local and CI use, with no Python, API key, coding assistant, or model credentials required.
+2. **Standalone modernization agent:** an optional Python CLI that uses an interchangeable coding-agent SDK to propose and repair an R candidate, then calls the same R validator.
+3. **Bring Your Own Agent (BYOA):** users of GitHub Copilot in VS Code, Claude Code, or OpenAI Codex call `equivR` through a local MCP server, the CLI, and portable Agent Skills, keeping their existing approved sign-in. No separate `equivR` model subscription is needed in this mode.
 
-The grant does **not** fund a general SAS-to-R or Python-to-R translator, a coding agent, live SAS integration, regulatory certification, or a proof of universal program equivalence. Those may become future consumers or extensions of the validation layer.
+In every mode the coding agent can edit only the candidate. It cannot change the locked reference artifacts, the contract, the validator, or the verdict. Because an external agent may skip validation, the final verdict must always be reproducible with the independent validate command and in CI.
+
+Phase 1 is artifact-based. It is not a general SAS-to-R or Python-to-R translator, does not need live SAS in CI, and is not regulatory certification.
+
+## Current status
+
+This is early-stage work. **None of the architecture above is implemented on `main` yet.**
+
+- **On `main`:** a small base-R proof of concept, [`R/equivR.R`](R/equivR.R), with [`examples/basic_validation.R`](examples/basic_validation.R). It demonstrates the fail-closed acceptance rule: exact match → PASS; numeric difference within tolerance → PASS; difference outside tolerance → FAIL with diagnostics; structural or key mismatch → FAIL.
+- **Reference only:** an earlier M1 implementation (R package, `contract-v1` parser, dataset checks, golden tests) is kept on the unmerged branch `feature/m1-deterministic-core` from closed pull request #1. Pieces may be ported later; it is not the baseline.
+- **Next:** an architecture decision record, a small synthetic SAS → R task, and a time-boxed coding-agent SDK comparison (implementation plan, Section 12).
+
+Run the prototype checks with:
+
+```sh
+Rscript examples/basic_validation.R
+```
 
 ## Project leads
 
@@ -35,58 +43,33 @@ Both project leads have current employers, but `equivR` is independent open-sour
 
 ## R Consortium ISC proposal
 
-This repository is the project link for our **R Consortium ISC 2026-2** technical grant proposal.
+This repository is the project link for our **R Consortium ISC 2026-2** grant proposal. **The grant has not been awarded**; the proposal describes the Phase 1 work we plan to do, and development can proceed independently of an award.
 
-All proposal sources live in [`proposal/`](proposal/) and follow the official R Consortium ISC Quarto structure:
+The proposal requests **$5,000 over four months** across five milestones:
 
-- `proposal/isc-proposal.qmd` (entry point)
-- `proposal/00-exec-summary.qmd`
-- `proposal/01-signatories.qmd`
-- `proposal/02-problemdefinition.qmd`
-- `proposal/03-proposal.qmd`
-- `proposal/04-timeline.qmd`
-- `proposal/05-success.qmd`
-- `proposal/figures/equivR-cross-runtime-overview.png`
-- `proposal/SUBMISSION_FORM.md`
+| Milestone | Deliverable |
+|---|---|
+| M1 | Equivalence contract, deterministic validation, diagnostics, tests |
+| M2 | SAS → R modernization demonstration using pregenerated SAS references |
+| M3 | Legacy R → modern R, R-friendly invocation, CI, benchmark format |
+| M4 | Model-independent bounded LLM repair loop and reproducibility evidence |
+| M5 | Documentation, examples, release hardening, tagged release |
 
-Project code lives at the repo root:
+No ISC funding is requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
 
-- Minimal prototype: [`R/equivR.R`](R/equivR.R)
-- Prototype examples: [`examples/basic_validation.R`](examples/basic_validation.R)
+Proposal sources live in [`proposal/`](proposal/) and follow the official R Consortium ISC Quarto structure:
 
-Render the proposal from inside the `proposal/` directory:
+- `proposal/isc-proposal.qmd` (entry point) and section files `00-exec-summary.qmd` … `05-success.qmd`
+- `proposal/equivR_ISC_2026-2_proposal.md` (combined Markdown copy)
+- `proposal/figures/equivR-workflow.pdf` (Figure 1)
+- `proposal/isc-proposal.pdf` (rendered proposal) and `proposal/SUBMISSION_FORM.md`
 
-```sh
-cd proposal && quarto render isc-proposal.qmd
-```
-
-The proposal uses the official [`RConsortium/isc-proposal`](https://github.com/RConsortium/isc-proposal) structure and Hikmah PDF format.
-
-## Initial prototype
-
-The current base-R proof of concept demonstrates the fail-closed acceptance semantics the full toolkit will preserve:
-
-- exact match -> PASS;
-- numerical difference inside tolerance -> PASS;
-- numerical difference outside tolerance -> FAIL with diagnostics;
-- structural/key mismatch -> FAIL.
-
-This is deliberately small. The grant expands the proof of concept into reusable cross-runtime infrastructure, R-facing workflows, evidence generation, and community benchmarks.
-
-Run the prototype checks with:
+Render the proposal from inside `proposal/`:
 
 ```sh
-Rscript examples/basic_validation.R
+cd proposal && quarto render isc-proposal.qmd --to hikmah-pdf
 ```
 
 ## License
 
 Software code in this repository is released under the [Mozilla Public License 2.0 (MPL-2.0)](LICENSE). The proposal scaffold and retained Hikmah formatting files derive from the official R Consortium ISC proposal template; see [`NOTICE.md`](NOTICE.md).
-
-## Funding note
-
-The proposal requests **$5,000 over four months**. No ISC funding is requested for travel, workshops, hardware, publication fees, cloud services, AI credits, indirect costs, or licensed SAS software.
-
-## Status
-
-Early prototype and grant-proposal stage.

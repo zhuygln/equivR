@@ -147,6 +147,21 @@ equivR/
 
 This is a target layout, not a description of existing files. Preserve useful proven code where appropriate, but do not revive closed PR #1 as an architectural baseline.
 
+### 4.1 Current repository state (14 October 2026)
+
+On `main`, only the following exist outside `proposal/`:
+
+| Path | What it is | Target-layout status |
+|---|---|---|
+| `R/equivR.R` | Base-R proof of concept (`equiv_contract()`, `equiv_compare()`) with fail-closed exact/tolerance/structural checks | Prototype; to be replaced by the R package modules above |
+| `examples/basic_validation.R` | Script exercising the prototype's PASS/FAIL cases | Kept as a smoke example until the package exists |
+| `doc/equivR_implementation_plan.md` | This plan | Current |
+| `LICENSE`, `NOTICE.md`, `README.md` | MPL-2.0 license, template attribution, project overview | Current |
+
+Everything else in the layout (`R/contract.R`, `R/normalize.R`, `R/compare_*.R`, `R/evidence.R`, `DESCRIPTION`, `schemas/`, `tests/`, `equivr/`, `skills/`, `integrations/`, `benchmarks/`, `doc/contract.md`, `doc/architecture.md`, `doc/enterprise-integration.md`, `.github/workflows/`) does not exist on `main` yet.
+
+An earlier M1 implementation (R package scaffolding, `contract-v1` parser, dataset checks, JSON schemas, golden tests, R-CMD-check workflow) is preserved on the unmerged branch `feature/m1-deterministic-core` from closed PR #1. It is reference material only: individual pieces may be ported after the Week 1 architecture spike, through new reviewed changes, but the branch is not the baseline for this layout.
+
 ## 5. Four-month engineering schedule
 
 Workstreams overlap so the complete modernization workflow is validated early, while formal ISC milestones remain unchanged.
